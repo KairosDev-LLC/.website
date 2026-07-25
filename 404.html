@@ -17,6 +17,14 @@
     --flame: #ff5a1f;
   }
   * { box-sizing: border-box; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--flame);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; }
+  }
   html, body {
     margin: 0;
     padding: 0;
@@ -100,10 +108,12 @@
     </a>
   </div>
   <div class="wrap">
+    <main>
     <p class="eyebrow">404 · Off Schedule</p>
     <h1>Wrong<br />Rotation</h1>
     <p class="sub">This page isn't on the calendar. Head back and we'll get you sorted.</p>
     <a class="btn" href="/">Back to Kairos</a>
+    </main>
   </div>
 </body>
 </html>

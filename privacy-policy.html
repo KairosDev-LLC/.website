@@ -19,6 +19,13 @@
       --flame: #ff5a1f;
     }
     * { box-sizing: border-box; }
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--flame);
+      outline-offset: 3px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; }
+    }
     html, body {
       margin: 0;
       padding: 0;

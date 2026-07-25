@@ -57,6 +57,14 @@
     --flame-dim: rgba(255,90,31,0.16);
   }
   * { box-sizing: border-box; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--flame);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; }
+  }
   html { scroll-behavior: smooth; }
   html, body {
     margin: 0;
@@ -442,6 +450,7 @@
     </div>
   </nav>
 
+  <main>
   <header class="hero" id="top">
     <div class="wrap">
       <p class="eyebrow">Native iOS · iPadOS · watchOS</p>
@@ -544,6 +553,7 @@
       </div>
     </div>
   </section>
+  </main>
 
   <footer class="cta-footer">
     <div class="wrap">
