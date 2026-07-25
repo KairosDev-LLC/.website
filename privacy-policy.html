@@ -8,10 +8,12 @@
   <link rel="icon" href="icon.png" />
   <style>
     :root {
-      --ink: #16161f;
+      --ink: #0b0b0f;
       --paper: #f4f1ea;
       --paper-dim: #e9e4d8;
-      --line: rgba(22,22,31,0.12);
+      --line: rgba(11,11,15,0.12);
+      --line-on-ink: rgba(244,241,234,0.14);
+      --flame: #ff5a1f;
     }
     * { box-sizing: border-box; }
     html, body {
@@ -23,6 +25,7 @@
       -webkit-font-smoothing: antialiased;
       line-height: 1.6;
     }
+    .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
     .wrap {
       max-width: 760px;
       margin: 0 auto;
@@ -32,33 +35,44 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 28px 0;
-      border-bottom: 1px solid var(--line);
+      padding: 22px 8px;
+      background: var(--ink);
+      color: var(--paper);
+      margin: 0 -24px 0;
+      padding-left: 24px;
+      padding-right: 24px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
     .brand {
       display: flex;
       align-items: center;
       gap: 10px;
       font-weight: 700;
-      font-size: 20px;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
     .brand img {
-      width: 28px;
-      height: 28px;
-      border-radius: 7px;
+      width: 24px;
+      height: 24px;
     }
     .brand a {
-      color: var(--ink);
+      color: var(--paper);
       text-decoration: none;
       display: flex;
       align-items: center;
       gap: 10px;
     }
     nav a {
-      color: var(--ink);
+      color: var(--paper);
       text-decoration: none;
       opacity: 0.7;
-      font-size: 14px;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
       margin-left: 24px;
       transition: opacity 0.15s ease;
     }
@@ -66,23 +80,36 @@
     .content-area {
       padding: 64px 0;
     }
+    p.eyebrow {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--flame);
+      margin: 0 0 18px;
+    }
     h1 {
-      font-size: clamp(28px, 5vw, 40px);
-      line-height: 1.2;
+      font-size: clamp(30px, 6vw, 48px);
+      line-height: 1.05;
       margin: 0 0 12px;
-      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      font-weight: 400;
+      letter-spacing: 0.01em;
     }
     .meta-date {
-      font-size: 14px;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 13px;
       opacity: 0.6;
       margin-bottom: 48px;
     }
     h2 {
-      font-size: 22px;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
       margin: 44px 0 18px;
-      letter-spacing: -0.01em;
       border-bottom: 1px solid var(--line);
-      padding-bottom: 8px;
+      padding-bottom: 12px;
     }
     p, li {
       font-size: 16px;
@@ -98,10 +125,9 @@
     }
     .highlight-box {
       background: var(--paper-dim);
-      border-radius: 12px;
       padding: 24px;
       margin: 32px 0;
-      border-left: 4px solid var(--ink);
+      border-left: 3px solid var(--flame);
     }
     .highlight-box p:last-child {
       margin-bottom: 0;
@@ -112,8 +138,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13px;
-      opacity: 0.55;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 12px;
+      opacity: 0.6;
     }
     footer a { color: inherit; text-decoration: none; }
     footer a:hover { text-decoration: underline; }
@@ -139,6 +166,7 @@
     </header>
 
     <main class="content-area">
+      <p class="eyebrow">Legal</p>
       <h1>Privacy Policy</h1>
       <div class="meta-date">Effective Date: July 18, 2026</div>
 

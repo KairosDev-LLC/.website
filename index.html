@@ -3,189 +3,531 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Kairos — Know when they're free</title>
-<meta name="description" content="Kairos is a modern app for seeing when friends and family are available, 24/7." />
+<title>Kairos — Taking the guesswork out of shift work.</title>
+<meta name="description" content="Kairos is a native iOS, iPadOS &amp; watchOS app for shift workers. Track rotating schedules, share them with coworkers, and never miss a shift again." />
 <link rel="icon" href="icon.png" />
+
+<meta property="og:title" content="Kairos — Taking the guesswork out of shift work." />
+<meta property="og:description" content="A premium native app for firefighters, medics, police, and shift workers to track rotating schedules and share them with the people who matter." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="icon.png" />
+
 <style>
   :root {
-    --ink: #16161f;
+    --ink: #0b0b0f;
+    --ink-soft: #15151b;
     --paper: #f4f1ea;
     --paper-dim: #e9e4d8;
-    --line: rgba(22,22,31,0.12);
+    --line-on-ink: rgba(244,241,234,0.14);
+    --line-on-paper: rgba(11,11,15,0.12);
+    --flame: #ff5a1f;
+    --flame-dim: rgba(255,90,31,0.16);
   }
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   html, body {
     margin: 0;
     padding: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: Georgia, "Times New Roman", serif;
     -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+  .mono {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   }
   .wrap {
-    max-width: 880px;
+    max-width: 1180px;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 32px;
   }
-  header {
+
+  /* ---------- Nav ---------- */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 30;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 28px 0;
-    border-bottom: 1px solid var(--line);
+    padding: 22px 32px;
+    background: rgba(11,11,15,0.72);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line-on-ink);
   }
   .brand {
     display: flex;
     align-items: center;
     gap: 10px;
     font-weight: 700;
-    font-size: 20px;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--paper);
+    text-decoration: none;
   }
   .brand img {
-    width: 28px;
-    height: 28px;
-    border-radius: 7px;
+    width: 26px;
+    height: 26px;
   }
-  nav a {
-    color: var(--ink);
+  nav .links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  nav a.navlink {
+    color: var(--paper);
     text-decoration: none;
-    opacity: 0.7;
-    font-size: 14px;
-    margin-left: 24px;
-  }
-  nav a:hover { opacity: 1; }
-  .hero {
-    text-align: center;
-    padding: 96px 0 64px;
-  }
-  .hero img {
-    width: 112px;
-    height: 112px;
-    border-radius: 26px;
-    box-shadow: 0 20px 60px rgba(22,22,31,0.18);
-    margin-bottom: 36px;
-  }
-  h1 {
-    font-size: clamp(32px, 6vw, 52px);
-    line-height: 1.1;
-    margin: 0 0 18px;
-    letter-spacing: -0.01em;
-  }
-  .sub {
-    font-size: 19px;
-    line-height: 1.55;
-    max-width: 540px;
-    margin: 0 auto 36px;
-    opacity: 0.72;
-  }
-  .cta {
-    display: inline-flex;
-    gap: 14px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .btn {
-    display: inline-block;
-    padding: 13px 26px;
-    border-radius: 999px;
-    font-size: 15px;
-    font-weight: 600;
-    text-decoration: none;
+    opacity: 0.68;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
     transition: opacity 0.15s ease;
   }
-  .btn-primary {
-    background: var(--ink);
-    color: var(--paper);
+  nav a.navlink:hover { opacity: 1; }
+
+  /* ---------- Hero ---------- */
+  header.hero {
+    position: relative;
+    padding: 120px 0 90px;
+    overflow: hidden;
   }
+  header.hero::before {
+    content: "";
+    position: absolute;
+    top: -30%;
+    right: -15%;
+    width: 60%;
+    aspect-ratio: 1;
+    background: radial-gradient(circle at center, var(--flame-dim), transparent 70%);
+    pointer-events: none;
+  }
+  .eyebrow {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--flame);
+    margin: 0 0 26px;
+    position: relative;
+    z-index: 1;
+  }
+  h1.headline {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 0.92;
+    font-size: clamp(46px, 8.4vw, 118px);
+    display: flex;
+    flex-direction: column;
+  }
+  .sub {
+    position: relative;
+    z-index: 1;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 16px;
+    line-height: 1.65;
+    max-width: 560px;
+    margin: 34px 0 44px;
+    opacity: 0.78;
+  }
+  .cta-row {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 28px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+  }
+  .btn-primary {
+    background: var(--flame);
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .btn-primary:hover { background: #ff7440; }
   .btn-secondary {
     background: transparent;
-    color: var(--ink);
-    border: 1px solid var(--line);
+    color: var(--paper);
+    border-color: var(--line-on-ink);
   }
-  .btn:hover { opacity: 0.82; }
-  .features {
+  .btn-secondary:hover { border-color: var(--paper); }
+
+  /* platform badges under hero */
+  .platforms {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+  }
+  .platform-badge {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    border: 1px solid var(--line-on-ink);
+    opacity: 0.7;
+  }
+
+  /* ---------- Preview band ---------- */
+  .preview-band {
+    border-top: 1px solid var(--line-on-ink);
+    border-bottom: 1px solid var(--line-on-ink);
+    padding: 64px 0;
+  }
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line-on-ink);
+  }
+  .preview-cell {
+    background: var(--ink);
+    padding: 28px 22px;
+    text-align: center;
+  }
+  .preview-cell .num {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 34px;
+    color: var(--flame);
+    margin: 0 0 6px;
+  }
+  .preview-cell .label {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.65;
+  }
+
+  /* ---------- Feature panel (flips to paper) ---------- */
+  section.features {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 110px 0 130px;
+  }
+  .features-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 70px;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  .features-head .eyebrow-dark {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--flame);
+    margin: 0 0 18px;
+  }
+  .features-head h2 {
+    margin: 0;
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: clamp(32px, 5vw, 56px);
+    line-height: 1;
+  }
+  .feature-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1px;
-    background: var(--line);
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    overflow: hidden;
-    margin: 40px 0 100px;
+    background: var(--line-on-paper);
+    border: 1px solid var(--line-on-paper);
   }
-  .feature {
+  .feature-card {
     background: var(--paper);
-    padding: 32px 26px;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-height: 260px;
   }
-  .feature h3 {
-    font-size: 16px;
-    margin: 0 0 8px;
+  .feature-card .fnum {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.5;
   }
-  .feature p {
-    font-size: 14px;
-    line-height: 1.5;
-    opacity: 0.65;
+  .feature-card h3 {
     margin: 0;
+    font-size: 22px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
   }
-  footer {
-    border-top: 1px solid var(--line);
-    padding: 28px 0 48px;
+  .feature-card p {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13.5px;
+    line-height: 1.6;
+    opacity: 0.72;
+  }
+
+  /* ---------- Team / stack strip ---------- */
+  section.stack {
+    background: var(--ink);
+    padding: 90px 0;
+    text-align: center;
+  }
+  section.stack .eyebrow { justify-content: center; text-align: center; }
+  section.stack h2 {
+    margin: 0 0 40px;
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: clamp(28px, 4.5vw, 48px);
+    line-height: 1.05;
+  }
+  .stack-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .stack-tag {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border: 1px solid var(--line-on-ink);
+    opacity: 0.75;
+  }
+
+  /* ---------- CTA / footer ---------- */
+  footer.cta-footer {
+    background: var(--flame);
+    color: var(--ink);
+    padding: 110px 0 70px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  footer.cta-footer .eyebrow-black {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0.72;
+    margin: 0 0 22px;
+  }
+  footer.cta-footer h2 {
+    margin: 0 0 26px;
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: clamp(38px, 7vw, 86px);
+    line-height: 0.95;
+  }
+  footer.cta-footer p.tag {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 15px;
+    max-width: 480px;
+    margin: 0 auto 40px;
+    opacity: 0.85;
+    line-height: 1.6;
+  }
+  footer.cta-footer .btn-dark {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 18px 34px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 700;
+    transition: opacity 0.15s ease;
+  }
+  footer.cta-footer .btn-dark:hover { opacity: 0.85; }
+
+  .foot-bottom {
+    margin-top: 90px;
+    padding-top: 26px;
+    border-top: 1px solid rgba(11,11,15,0.2);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 13px;
-    opacity: 0.55;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    opacity: 0.75;
   }
-  footer a { color: inherit; }
+  .foot-bottom a { color: inherit; }
+  .foot-links { display: flex; gap: 20px; }
+
+  @media (max-width: 860px) {
+    .preview-grid { grid-template-columns: repeat(2, 1fr); }
+    .feature-grid { grid-template-columns: 1fr; }
+  }
   @media (max-width: 640px) {
-    .features { grid-template-columns: 1fr; }
-    header nav a { margin-left: 16px; }
+    nav { padding: 18px 20px; }
+    .wrap { padding: 0 20px; }
+    header.hero { padding: 100px 0 70px; }
+    nav .links { gap: 16px; }
+    nav a.navlink.hide-mobile { display: none; }
+    .preview-grid { grid-template-columns: 1fr 1fr; }
+    section.features { padding: 80px 0 90px; }
+    footer.cta-footer { padding: 90px 0 50px; }
   }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <img src="icon.png" alt="Kairos" />
-        <span>Kairos</span>
-      </div>
-      <nav>
-        <a href="#features">Features</a>
-        <a href="privacy">Privacy</a>
-        <a href="mailto:hello@kairosapp.dev">Contact</a>
-      </nav>
-    </header>
 
-    <section class="hero">
-      <img src="icon.png" alt="Kairos logo" />
-      <h1>Know when they're free.</h1>
-      <p class="sub">Kairos is a modern way to share your schedule with the people who matter — see who's around, 24/7, without the back-and-forth.</p>
-      <div class="cta">
-        <a class="btn btn-primary" href="#features">See how it works</a>
-        <a class="btn btn-secondary" href="mailto:hello@kairosapp.dev">Get in touch</a>
-      </div>
-    </section>
+  <nav>
+    <a class="brand" href="#top">
+      <img src="icon.png" alt="Kairos" />
+      Kairos
+    </a>
+    <div class="links">
+      <a class="navlink hide-mobile" href="#features">Features</a>
+      <a class="navlink hide-mobile" href="#stack">Platforms</a>
+      <a class="navlink" href="privacy">Privacy</a>
+      <a class="navlink" href="mailto:hello@kairosapp.dev">Contact</a>
+    </div>
+  </nav>
 
-    <section class="features" id="features">
-      <div class="feature">
-        <h3>Share your schedule</h3>
-        <p>Import a shared schedule with a one-time code and see availability at a glance.</p>
+  <header class="hero" id="top">
+    <div class="wrap">
+      <p class="eyebrow">Native iOS · iPadOS · watchOS</p>
+      <h1 class="headline">
+        <span>Taking the</span>
+        <span>Guesswork</span>
+        <span>Out of Shift Work</span>
+      </h1>
+      <p class="sub">Kairos is a premium app for firefighters, medics, police, and shift-based crews — track rotating schedules, share them with coworkers, and never miss a shift again.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="mailto:hello@kairosapp.dev?subject=TestFlight%20Access">Request TestFlight Access</a>
+        <a class="btn btn-secondary" href="#features">See how it works</a>
       </div>
-      <div class="feature">
-        <h3>Private by design</h3>
-        <p>Your schedule, your device. Recovery keys let you back up and restore without an account.</p>
+      <div class="platforms">
+        <span class="platform-badge">iOS 26.5+</span>
+        <span class="platform-badge">iPadOS</span>
+        <span class="platform-badge">watchOS Companion</span>
+        <span class="platform-badge">Home Screen Widgets</span>
       </div>
-      <div class="feature">
-        <h3>Built for real life</h3>
-        <p>Custom weekly patterns, shift cycles, and dashboard badges keep everyone in sync.</p>
-      </div>
-    </section>
+    </div>
+  </header>
 
-    <footer>
-      <span>&copy; 2026 Kairos LLC &bull; <a href="privacy.html">Privacy Policy</a></span>
-      <span><a href="mailto:hello@kairosapp.dev">hello@kairosapp.dev</a></span>
-    </footer>
+  <div class="preview-band">
+    <div class="wrap">
+      <div class="preview-grid">
+        <div class="preview-cell">
+          <p class="num mono">10+</p>
+          <p class="label">Preset Rotations</p>
+        </div>
+        <div class="preview-cell">
+          <p class="num mono">6</p>
+          <p class="label">Char Access Codes</p>
+        </div>
+        <div class="preview-cell">
+          <p class="num mono">AES-256</p>
+          <p class="label">Encrypted Recovery</p>
+        </div>
+        <div class="preview-cell">
+          <p class="num mono">24/7</p>
+          <p class="label">Live Duty Status</p>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <section class="features" id="features">
+    <div class="wrap">
+      <div class="features-head">
+        <div>
+          <p class="eyebrow-dark">Built for real shifts</p>
+          <h2>Everything a rotation needs</h2>
+        </div>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <span class="fnum">01 · Dashboard</span>
+          <h3>Know your status</h3>
+          <p>A real-time duty ring and countdown badge shows exactly where you stand in your rotation, at a glance, on iPhone and iPad.</p>
+        </div>
+        <div class="feature-card">
+          <span class="fnum">02 · Calendar</span>
+          <h3>Full month control</h3>
+          <p>Color-coded month grid with tap-to-override controls for vacation days, extra shifts, and on-call assignments.</p>
+        </div>
+        <div class="feature-card">
+          <span class="fnum">03 · Sharing</span>
+          <h3>Share your schedule</h3>
+          <p>Generate a one-time 6-character access code so coworkers and family can see your availability, read-only, without an account.</p>
+        </div>
+        <div class="feature-card">
+          <span class="fnum">04 · Recovery</span>
+          <h3>Private by design</h3>
+          <p>Your schedule lives on your device. AES-256 encrypted recovery keys let you back up and restore across devices without an account.</p>
+        </div>
+        <div class="feature-card">
+          <span class="fnum">05 · Apple Watch</span>
+          <h3>On your wrist</h3>
+          <p>A companion watchOS app with a progress ring, 7-day shift forecast, and full calendar — right where you need it.</p>
+        </div>
+        <div class="feature-card">
+          <span class="fnum">06 · Widgets</span>
+          <h3>Home screen, ready</h3>
+          <p>Small, medium, and large widgets with configurable schedule selection keep your status visible without opening the app.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stack" id="stack">
+    <div class="wrap">
+      <p class="eyebrow">Built with</p>
+      <h2>Native from the ground up</h2>
+      <div class="stack-tags">
+        <span class="stack-tag">Swift 5 / SwiftUI</span>
+        <span class="stack-tag">WidgetKit</span>
+        <span class="stack-tag">CloudKit Sync</span>
+        <span class="stack-tag">StoreKit 2</span>
+        <span class="stack-tag">CryptoKit AES-256</span>
+        <span class="stack-tag">Liquid Glass UI</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="cta-footer">
+    <div class="wrap">
+      <p class="eyebrow-black">Kairos Pro</p>
+      <h2>Never Miss<br />a Shift Again</h2>
+      <p class="tag">Kairos Pro unlocks the Apple Watch companion and unlimited shared coworker schedules — monthly or yearly, with a 20% annual discount.</p>
+      <a class="btn-dark" href="mailto:hello@kairosapp.dev?subject=TestFlight%20Access">Request TestFlight Access</a>
+
+      <div class="foot-bottom">
+        <span>&copy; 2026 Kairos LLC</span>
+        <div class="foot-links">
+          <a href="privacy">Privacy Policy</a>
+          <a href="mailto:hello@kairosapp.dev">hello@kairosapp.dev</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>
