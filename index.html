@@ -53,6 +53,8 @@
 }
 </script>
 
+<script>document.documentElement.classList.add('js');</script>
+
 <style>
   :root {
     --ink: #0b0b0f;
@@ -61,6 +63,7 @@
     --line-on-paper: rgba(11,11,15,0.12);
     --flame: #ff5a1f;
     --flame-dim: rgba(255,90,31,0.16);
+    --flame-faint: rgba(255,90,31,0.08);
   }
   * { box-sizing: border-box; }
   a:focus-visible, button:focus-visible {
@@ -88,6 +91,50 @@
     max-width: 1180px;
     margin: 0 auto;
     padding: 0 32px;
+  }
+
+  /* ---------- Scroll reveal (progressive enhancement) ---------- */
+  /* Without JS, .reveal elements are just visible — no permanently-hidden content. */
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    transition-delay: calc(var(--reveal-i, 0) * 70ms);
+  }
+  .js .reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ---------- Liquid glass surfaces ---------- */
+  .glass-dark {
+    background: rgba(244,241,234,0.05);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(244,241,234,0.12);
+    box-shadow: inset 0 1px 0 rgba(244,241,234,0.14), 0 10px 30px rgba(0,0,0,0.28);
+    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  }
+  .glass-dark:hover {
+    background: rgba(244,241,234,0.08);
+    transform: translateY(-3px);
+    box-shadow: inset 0 1px 0 rgba(244,241,234,0.18), 0 16px 40px rgba(0,0,0,0.32);
+  }
+  .glass-light {
+    background: rgba(244,241,234,0.5);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(11,11,15,0.07);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), 0 10px 30px rgba(11,11,15,0.06);
+    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  }
+  .glass-light:hover {
+    background: rgba(244,241,234,0.72);
+    transform: translateY(-3px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 16px 40px rgba(11,11,15,0.1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .glass-dark:hover, .glass-light:hover { transform: none; }
   }
 
   /* ---------- Nav ---------- */
@@ -231,26 +278,88 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 8px 14px;
+    border-radius: 3px;
+    opacity: 0.85;
+  }
+
+  /* ---------- Roles strip ---------- */
+  .roles-strip {
+    position: relative;
+    border-top: 1px solid var(--line-on-ink);
+    border-bottom: 1px solid var(--line-on-ink);
+    padding: 30px 0;
+    overflow: hidden;
+  }
+  .roles-strip::before {
+    content: "";
+    position: absolute;
+    top: -60%;
+    left: -10%;
+    width: 40%;
+    aspect-ratio: 1;
+    background: radial-gradient(circle at center, var(--flame-faint), transparent 70%);
+    pointer-events: none;
+  }
+  .roles-row {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .roles-label {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    white-space: nowrap;
+  }
+  .roles-list {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .role-tag {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    padding: 7px 13px;
+    border-radius: 4px;
     border: 1px solid var(--line-on-ink);
-    opacity: 0.7;
+    opacity: 0.82;
   }
 
   /* ---------- Preview band ---------- */
   .preview-band {
+    position: relative;
     border-top: 1px solid var(--line-on-ink);
     border-bottom: 1px solid var(--line-on-ink);
     padding: 64px 0;
+    overflow: hidden;
+  }
+  .preview-band::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -12%;
+    width: 45%;
+    aspect-ratio: 1;
+    background: radial-gradient(circle at center, var(--flame-faint), transparent 70%);
+    pointer-events: none;
   }
   .preview-grid {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1px;
-    background: var(--line-on-ink);
+    gap: 12px;
   }
   .preview-cell {
-    background: var(--ink);
     padding: 28px 22px;
     text-align: center;
+    border-radius: 6px;
   }
   .preview-cell .num {
     font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
@@ -268,15 +377,29 @@
 
   /* ---------- Feature panel (flips to paper) ---------- */
   section.features {
+    position: relative;
     background: var(--paper);
     color: var(--ink);
     padding: 110px 0 130px;
+    overflow: hidden;
+  }
+  section.features::before {
+    content: "";
+    position: absolute;
+    top: -10%;
+    right: -10%;
+    width: 45%;
+    aspect-ratio: 1;
+    background: radial-gradient(circle at center, rgba(255,90,31,0.10), transparent 70%);
+    pointer-events: none;
   }
   .features-head {
+    position: relative;
+    z-index: 1;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 70px;
+    margin-bottom: 24px;
     flex-wrap: wrap;
     gap: 24px;
   }
@@ -295,16 +418,26 @@
     font-size: clamp(32px, 5vw, 56px);
     line-height: 1;
   }
+  .features-lede {
+    position: relative;
+    z-index: 1;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    max-width: 640px;
+    opacity: 0.68;
+    margin: 0 0 60px;
+  }
   .feature-grid {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--line-on-paper);
-    border: 1px solid var(--line-on-paper);
+    gap: 14px;
   }
   .feature-card {
-    background: var(--paper);
     padding: 40px 32px;
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -358,8 +491,7 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 10px 16px;
-    border: 1px solid var(--line-on-ink);
-    opacity: 0.75;
+    border-radius: 4px;
   }
 
   /* ---------- CTA / footer ---------- */
@@ -438,6 +570,7 @@
     .preview-grid { grid-template-columns: 1fr 1fr; }
     section.features { padding: 80px 0 90px; }
     footer.cta-footer { padding: 90px 0 50px; }
+    .roles-row { flex-direction: column; align-items: flex-start; gap: 12px; }
   }
 </style>
 </head>
@@ -471,31 +604,47 @@
         <a class="btn btn-secondary" href="#features">See how it works</a>
       </div>
       <div class="platforms">
-        <span class="platform-badge">iOS 26.5+</span>
-        <span class="platform-badge">iPadOS</span>
-        <span class="platform-badge">macOS</span>
-        <span class="platform-badge">watchOS Companion</span>
-        <span class="platform-badge">Home Screen Widgets</span>
+        <span class="platform-badge glass-dark">iOS 26.5+</span>
+        <span class="platform-badge glass-dark">iPadOS</span>
+        <span class="platform-badge glass-dark">macOS</span>
+        <span class="platform-badge glass-dark">watchOS Companion</span>
+        <span class="platform-badge glass-dark">Home Screen Widgets</span>
       </div>
     </div>
   </header>
 
+  <div class="roles-strip">
+    <div class="wrap">
+      <div class="roles-row">
+        <span class="roles-label">Built for</span>
+        <div class="roles-list">
+          <span class="role-tag mono">Firefighters</span>
+          <span class="role-tag mono">Medical</span>
+          <span class="role-tag mono">Law Enforcement</span>
+          <span class="role-tag mono">Industrial</span>
+          <span class="role-tag mono">Transportation</span>
+          <span class="role-tag mono">Hospitality</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="preview-band">
     <div class="wrap">
       <div class="preview-grid">
-        <div class="preview-cell">
+        <div class="preview-cell glass-dark reveal" style="--reveal-i:0">
           <p class="num mono">10+</p>
           <p class="label">Preset Rotations</p>
         </div>
-        <div class="preview-cell">
+        <div class="preview-cell glass-dark reveal" style="--reveal-i:1">
           <p class="num mono">6</p>
           <p class="label">Char Access Codes</p>
         </div>
-        <div class="preview-cell">
+        <div class="preview-cell glass-dark reveal" style="--reveal-i:2">
           <p class="num mono">AES-256</p>
           <p class="label">Encrypted Recovery</p>
         </div>
-        <div class="preview-cell">
+        <div class="preview-cell glass-dark reveal" style="--reveal-i:3">
           <p class="num mono">24/7</p>
           <p class="label">Live Duty Status</p>
         </div>
@@ -511,33 +660,34 @@
           <h2>Everything a rotation needs</h2>
         </div>
       </div>
+      <p class="features-lede">No accounts, no servers holding your data — your schedule lives on your device and syncs privately through your own iCloud. Sharing is opt-in, read-only, and revocable any time.</p>
       <div class="feature-grid">
-        <div class="feature-card">
+        <div class="feature-card glass-light reveal" style="--reveal-i:0">
           <span class="fnum">01 · Dashboard</span>
           <h3>Know your status</h3>
           <p>A real-time duty ring and countdown badge shows exactly where you stand in your rotation, at a glance, on iPhone and iPad.</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card glass-light reveal" style="--reveal-i:1">
           <span class="fnum">02 · Calendar</span>
           <h3>Full month control</h3>
           <p>Color-coded month grid with tap-to-override controls for vacation days, extra shifts, and on-call assignments.</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card glass-light reveal" style="--reveal-i:2">
           <span class="fnum">03 · Sharing</span>
           <h3>Share your schedule</h3>
           <p>Generate a one-time 6-character access code so coworkers and family can see your availability, read-only, without an account.</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card glass-light reveal" style="--reveal-i:3">
           <span class="fnum">04 · Recovery</span>
           <h3>Private by design</h3>
           <p>Your schedule lives on your device. AES-256 encrypted recovery keys let you back up and restore across devices without an account.</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card glass-light reveal" style="--reveal-i:4">
           <span class="fnum">05 · Apple Watch</span>
           <h3>On your wrist</h3>
           <p>A companion watchOS app with a progress ring, 7-day shift forecast, and full calendar — right where you need it.</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card glass-light reveal" style="--reveal-i:5">
           <span class="fnum">06 · Widgets</span>
           <h3>Home screen, ready</h3>
           <p>Small, medium, and large widgets with configurable schedule selection keep your status visible without opening the app.</p>
@@ -551,12 +701,12 @@
       <p class="eyebrow">Built with</p>
       <h2>Native from the ground up</h2>
       <div class="stack-tags">
-        <span class="stack-tag">Swift 5 / SwiftUI</span>
-        <span class="stack-tag">WidgetKit</span>
-        <span class="stack-tag">CloudKit Sync</span>
-        <span class="stack-tag">StoreKit 2</span>
-        <span class="stack-tag">CryptoKit AES-256</span>
-        <span class="stack-tag">Liquid Glass UI</span>
+        <span class="stack-tag glass-dark">Swift 5 / SwiftUI</span>
+        <span class="stack-tag glass-dark">WidgetKit</span>
+        <span class="stack-tag glass-dark">CloudKit Sync</span>
+        <span class="stack-tag glass-dark">StoreKit 2</span>
+        <span class="stack-tag glass-dark">CryptoKit AES-256</span>
+        <span class="stack-tag glass-dark">Liquid Glass UI</span>
       </div>
     </div>
   </section>
@@ -578,6 +728,28 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    (function () {
+      if (!('IntersectionObserver' in window)) {
+        document.querySelectorAll('.reveal').forEach(function (el) {
+          el.classList.add('revealed');
+        });
+        return;
+      }
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.reveal').forEach(function (el) {
+        observer.observe(el);
+      });
+    })();
+  </script>
 
 </body>
 </html>
