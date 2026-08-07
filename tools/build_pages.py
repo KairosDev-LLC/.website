@@ -58,10 +58,10 @@ def nav():
 </nav>'''
 
 
-def footer(head, tagline):
+def footer(head, tagline, eyebrow="Get Kairos"):
     return f'''<footer class="cta-footer">
   <div class="wrap">
-    <p class="eyebrow-black">Kairos Pro</p>
+    <p class="eyebrow-black">{eyebrow}</p>
     <h2>{head}</h2>
     <p class="tag-line">{tagline}</p>
     {badge()}
@@ -104,6 +104,7 @@ def footer(head, tagline):
 
 
 def page(slug, title, description, h1, sub, body,
+         cta_eyebrow="Get Kairos",
          cta_head="Never Miss<br />a Shift Again",
          cta_tag="Free to download. Kairos Pro unlocks the Apple Watch companion and unlimited shared coworker schedules, from $4.99 a month.",
          extra_head="", extra_body=""):
@@ -172,7 +173,7 @@ def page(slug, title, description, h1, sub, body,
 
 </main>
 
-{footer(cta_head, cta_tag)}
+{footer(cta_head, cta_tag, cta_eyebrow)}
 {extra_body}
 <script src="/assets/site.js"></script>
 </body>
@@ -511,6 +512,7 @@ def rotations_page():
         "Rotations",
         "Eight real shift rotations, what each one actually costs you in hours, and a simulator that draws any of them onto a live calendar.",
         body,
+        cta_eyebrow="Built-in rotations",
         cta_head="Your Rotation,<br />Already Set Up",
         cta_tag="Kelly, Panama, DuPont, 24/48 and 48/96 are built in. Custom layouts take about a minute.",
     )
@@ -645,6 +647,7 @@ def pricing_page():
         "Pricing",
         "Free to download, and genuinely useful for free. Pro adds the Apple Watch companion and unlimited shared schedules.",
         body,
+        cta_eyebrow="Free to download",
         cta_head="Start Free.<br />Upgrade If It Helps.",
         cta_tag="No trial clock, no account, no card needed to try it.",
     )
@@ -763,6 +766,7 @@ def faq_page():
         "Twenty questions, grouped and searchable. Start typing to filter them.",
         body,
         extra_head=f'\n<script type="application/ld+json">\n{ld}\n</script>\n',
+        cta_eyebrow="Still stuck?",
         cta_head="Answers Are<br />Cheaper Than Guessing",
         cta_tag="If your question is not here, email us. A person reads it.",
     )
@@ -882,6 +886,7 @@ def support_page():
         "Support",
         "Fixes for the five things people actually write in about, and a real email address for everything else.",
         body,
+        cta_eyebrow="Talk to a human",
         cta_head="We Read<br />Every Email",
         cta_tag="Kairos is built by a small team. Your report goes to the people who can fix it.",
     )
@@ -977,6 +982,7 @@ def changelog_page():
         "Changelog",
         "What shipped, and when. Mirrored from the App Store release notes.",
         body,
+        cta_eyebrow="Keep it updated",
         cta_head="Always<br />Getting Sharper",
         cta_tag="Update from the App Store to pick up the latest fixes.",
     )
