@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Kairos — Taking the guesswork out of shift work.</title>
-<meta name="description" content="Kairos is a native iOS, iPadOS, watchOS &amp; macOS app for shift workers. Track rotating schedules, share them with coworkers, and never miss a shift again." />
+<meta name="description" content="Kairos is a native iOS, iPadOS, watchOS &amp; macOS app for shift workers. Track rotating schedules like Kelly, Panama, DuPont, 24/48 and 48/96, share them with a 6-character code, and never miss a shift again." />
 <link rel="icon" href="favicon.ico" sizes="48x48" />
 <link rel="icon" href="icon.png" type="image/png" />
 <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -12,13 +12,14 @@
 <meta name="color-scheme" content="dark" />
 <link rel="manifest" href="manifest.json" />
 <meta name="apple-mobile-web-app-title" content="Kairos" />
+<meta name="apple-itunes-app" content="app-id=6792157855" />
 
 <meta property="og:title" content="Kairos — Taking the guesswork out of shift work." />
 <meta property="og:description" content="A premium native app for firefighters, medics, police, and shift workers to track rotating schedules and share them with the people who matter." />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Kairos" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://www.kairosapp.dev" />
+<meta property="og:url" content="https://www.kairosapp.dev/" />
 <meta property="og:image" content="https://www.kairosapp.dev/icon.png" />
 <meta property="og:image:width" content="300" />
 <meta property="og:image:height" content="300" />
@@ -27,165 +28,50 @@
 <meta name="twitter:title" content="Kairos — Taking the guesswork out of shift work." />
 <meta name="twitter:description" content="A premium native app for firefighters, medics, police, and shift workers to track rotating schedules and share them with the people who matter." />
 <meta name="twitter:image" content="https://www.kairosapp.dev/icon.png" />
-<link rel="canonical" href="https://www.kairosapp.dev" />
+<link rel="canonical" href="https://www.kairosapp.dev/" />
 
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "MobileApplication",
-  "name": "Kairos",
-  "applicationCategory": "LifestyleApplication",
-  "operatingSystem": "iOS, iPadOS, watchOS, macOS",
+  "name": "Kairos - Shift Tracker",
+  "alternateName": "Kairos",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "iOS 26.5, iPadOS 26.5, watchOS, macOS",
+  "softwareVersion": "2.1",
+  "datePublished": "2026-07-26",
   "description": "A native iOS, iPadOS, watchOS & macOS app for shift workers to track rotating schedules, share them with coworkers, and never miss a shift again.",
-  "url": "https://www.kairosapp.dev",
+  "url": "https://www.kairosapp.dev/",
   "image": "https://www.kairosapp.dev/icon.png",
+  "screenshot": [
+    "https://www.kairosapp.dev/assets/shots/shot-1-working.webp",
+    "https://www.kairosapp.dev/assets/shots/shot-2-calendar.webp",
+    "https://www.kairosapp.dev/assets/shots/shot-3-vacation.webp"
+  ],
+  "installUrl": "https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855",
+  "downloadUrl": "https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855",
+  "contentRating": "4+",
   "publisher": {
     "@type": "Organization",
     "name": "KairosDev LLC",
-    "url": "https://www.kairosapp.dev",
+    "url": "https://www.kairosapp.dev/",
     "email": "team@kairosapp.dev"
   },
-  "offers": {
-    "@type": "Offer",
-    "category": "Freemium",
-    "priceCurrency": "USD"
-  }
+  "offers": [
+    { "@type": "Offer", "name": "Kairos", "price": "0", "priceCurrency": "USD", "category": "Free" },
+    { "@type": "Offer", "name": "Kairos Pro Monthly", "price": "4.99", "priceCurrency": "USD" },
+    { "@type": "Offer", "name": "Kairos Pro Yearly", "price": "49.99", "priceCurrency": "USD" }
+  ]
 }
 </script>
 
 <script>document.documentElement.classList.add('js');</script>
-
+<link rel="stylesheet" href="assets/site.css" />
 <style>
-  :root {
-    --ink: #0b0b0f;
-    --paper: #f4f1ea;
-    --line-on-ink: rgba(244,241,234,0.14);
-    --line-on-paper: rgba(11,11,15,0.12);
-    --flame: #ff5a1f;
-    --flame-dim: rgba(255,90,31,0.16);
-    --flame-faint: rgba(255,90,31,0.08);
-  }
-  * { box-sizing: border-box; }
-  a:focus-visible, button:focus-visible {
-    outline: 2px solid var(--flame);
-    outline-offset: 3px;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    * { transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; }
-  }
-  html { scroll-behavior: smooth; }
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: var(--ink);
-    color: var(--paper);
-    font-family: Georgia, "Times New Roman", serif;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: clip;
-  }
-  .mono {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-  }
-  .wrap {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 0 32px;
-  }
-
-  /* ---------- Scroll reveal (progressive enhancement) ---------- */
-  /* Without JS, .reveal elements are just visible — no permanently-hidden content. */
-  .js .reveal {
-    opacity: 0;
-    transform: translateY(22px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-    transition-delay: calc(var(--reveal-i, 0) * 70ms);
-  }
-  .js .reveal.revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ---------- Liquid glass surfaces ---------- */
-  .glass-dark {
-    background: rgba(244,241,234,0.05);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(244,241,234,0.12);
-    box-shadow: inset 0 1px 0 rgba(244,241,234,0.14), 0 10px 30px rgba(0,0,0,0.28);
-    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
-  }
-  .glass-dark:hover {
-    background: rgba(244,241,234,0.08);
-    transform: translateY(-3px);
-    box-shadow: inset 0 1px 0 rgba(244,241,234,0.18), 0 16px 40px rgba(0,0,0,0.32);
-  }
-  .glass-light {
-    background: rgba(244,241,234,0.5);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(11,11,15,0.07);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), 0 10px 30px rgba(11,11,15,0.06);
-    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
-  }
-  .glass-light:hover {
-    background: rgba(244,241,234,0.72);
-    transform: translateY(-3px);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 16px 40px rgba(11,11,15,0.1);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .glass-dark:hover, .glass-light:hover { transform: none; }
-  }
-
-  /* ---------- Nav ---------- */
-  nav {
-    position: sticky;
-    top: 0;
-    z-index: 30;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 22px 32px;
-    background: rgba(11,11,15,0.72);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line-on-ink);
-  }
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 700;
-    font-size: 18px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--paper);
-    text-decoration: none;
-  }
-  .brand img {
-    width: 26px;
-    height: 26px;
-  }
-  nav .links {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-  }
-  nav a.navlink {
-    color: var(--paper);
-    text-decoration: none;
-    opacity: 0.68;
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    transition: opacity 0.15s ease;
-  }
-  nav a.navlink:hover { opacity: 1; }
-
-  /* ---------- Hero ---------- */
+  /* Home-only hero treatment. */
   header.hero {
     position: relative;
-    padding: 120px 0 90px;
+    padding: 116px 0 86px;
     overflow: hidden;
   }
   header.hero::before {
@@ -197,16 +83,6 @@
     aspect-ratio: 1;
     background: radial-gradient(circle at center, var(--flame-dim), transparent 70%);
     pointer-events: none;
-  }
-  .eyebrow {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 13px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--flame);
-    margin: 0 0 26px;
-    position: relative;
-    z-index: 1;
   }
   h1.headline {
     position: relative;
@@ -223,11 +99,11 @@
   .sub {
     position: relative;
     z-index: 1;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-family: var(--mono);
     font-size: 16px;
     line-height: 1.65;
-    max-width: 560px;
-    margin: 34px 0 44px;
+    max-width: 580px;
+    margin: 34px 0 40px;
     opacity: 0.78;
   }
   .cta-row {
@@ -236,44 +112,27 @@
     display: flex;
     gap: 16px;
     flex-wrap: wrap;
-  }
-  .btn {
-    display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 16px 28px;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 13px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: all 0.15s ease;
-    border: 1px solid transparent;
   }
-  .btn-primary {
-    background: var(--flame);
-    color: var(--ink);
-    font-weight: 700;
+  .rating-line {
+    position: relative;
+    z-index: 1;
+    font-family: var(--mono);
+    font-size: 12px;
+    opacity: 0.6;
+    margin: 22px 0 0;
   }
-  .btn-primary:hover { background: #ff7440; }
-  .btn-secondary {
-    background: transparent;
-    color: var(--paper);
-    border-color: var(--line-on-ink);
-  }
-  .btn-secondary:hover { border-color: var(--paper); }
-
-  /* platform badges under hero */
+  .rating-line .stars { color: var(--flame); letter-spacing: 0.1em; }
   .platforms {
     position: relative;
     z-index: 1;
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    margin-top: 40px;
+    margin-top: 38px;
   }
   .platform-badge {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -281,13 +140,11 @@
     border-radius: 3px;
     opacity: 0.85;
   }
-
-  /* ---------- Roles strip ---------- */
   .roles-strip {
     position: relative;
     border-top: 1px solid var(--line-on-ink);
     border-bottom: 1px solid var(--line-on-ink);
-    padding: 30px 0;
+    padding: 28px 0;
     overflow: hidden;
   }
   .roles-strip::before {
@@ -309,34 +166,17 @@
     flex-wrap: wrap;
   }
   .roles-label {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     opacity: 0.55;
     white-space: nowrap;
   }
-  .roles-list {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .role-tag {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    padding: 7px 13px;
-    border-radius: 4px;
-    border: 1px solid var(--line-on-ink);
-    opacity: 0.82;
-  }
-
-  /* ---------- Preview band ---------- */
   .preview-band {
     position: relative;
-    border-top: 1px solid var(--line-on-ink);
     border-bottom: 1px solid var(--line-on-ink);
-    padding: 64px 0;
+    padding: 56px 0;
     overflow: hidden;
   }
   .preview-band::before {
@@ -349,247 +189,46 @@
     background: radial-gradient(circle at center, var(--flame-faint), transparent 70%);
     pointer-events: none;
   }
-  .preview-grid {
-    position: relative;
-    z-index: 1;
+  .preview-band .wrap { position: relative; z-index: 1; }
+  .home-split {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-  }
-  .preview-cell {
-    padding: 28px 22px;
-    text-align: center;
-    border-radius: 6px;
-  }
-  .preview-cell .num {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 34px;
-    color: var(--flame);
-    margin: 0 0 6px;
-  }
-  .preview-cell .label {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    opacity: 0.65;
-  }
-
-  /* ---------- Feature panel (flips to paper) ---------- */
-  section.features {
-    position: relative;
-    background: var(--paper);
-    color: var(--ink);
-    padding: 110px 0 130px;
-    overflow: hidden;
-  }
-  section.features::before {
-    content: "";
-    position: absolute;
-    top: -10%;
-    right: -10%;
-    width: 45%;
-    aspect-ratio: 1;
-    background: radial-gradient(circle at center, rgba(255,90,31,0.10), transparent 70%);
-    pointer-events: none;
-  }
-  .features-head {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-    gap: 24px;
-  }
-  .features-head .eyebrow-dark {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 13px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--flame);
-    margin: 0 0 18px;
-  }
-  .features-head h2 {
-    margin: 0;
-    font-weight: 400;
-    text-transform: uppercase;
-    font-size: clamp(32px, 5vw, 56px);
-    line-height: 1;
-  }
-  .features-lede {
-    position: relative;
-    z-index: 1;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 14px;
-    line-height: 1.7;
-    max-width: 640px;
-    opacity: 0.68;
-    margin: 0 0 60px;
-  }
-  .feature-grid {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-  }
-  .feature-card {
-    padding: 40px 32px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    min-height: 260px;
-  }
-  .feature-card .fnum {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 12px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    opacity: 0.5;
-  }
-  .feature-card h3 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.01em;
-  }
-  .feature-card p {
-    margin: 0;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 13.5px;
-    line-height: 1.6;
-    opacity: 0.72;
-  }
-
-  /* ---------- Team / stack strip ---------- */
-  section.stack {
-    background: var(--ink);
-    padding: 90px 0;
-    text-align: center;
-  }
-  section.stack .eyebrow { justify-content: center; text-align: center; }
-  section.stack h2 {
-    margin: 0 0 40px;
-    font-weight: 400;
-    text-transform: uppercase;
-    font-size: clamp(28px, 4.5vw, 48px);
-    line-height: 1.05;
-  }
-  .stack-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-  }
-  .stack-tag {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 10px 16px;
-    border-radius: 4px;
-  }
-
-  /* ---------- CTA / footer ---------- */
-  footer.cta-footer {
-    background: var(--flame);
-    color: var(--ink);
-    padding: 110px 0 70px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  footer.cta-footer .eyebrow-black {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 13px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    opacity: 0.72;
-    margin: 0 0 22px;
-  }
-  footer.cta-footer h2 {
-    margin: 0 0 26px;
-    font-weight: 400;
-    text-transform: uppercase;
-    font-size: clamp(38px, 7vw, 86px);
-    line-height: 0.95;
-  }
-  footer.cta-footer p.tag {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 15px;
-    max-width: 480px;
-    margin: 0 auto 40px;
-    opacity: 0.85;
-    line-height: 1.6;
-  }
-  footer.cta-footer .btn-dark {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 18px 34px;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 13px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-decoration: none;
-    display: inline-block;
-    font-weight: 700;
-    transition: opacity 0.15s ease;
-  }
-  footer.cta-footer .btn-dark:hover { opacity: 0.85; }
-
-  .foot-bottom {
-    margin-top: 90px;
-    padding-top: 26px;
-    border-top: 1px solid rgba(11,11,15,0.2);
-    display: flex;
-    justify-content: space-between;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 48px;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 14px;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 12px;
-    opacity: 0.75;
   }
-  .foot-bottom a { color: inherit; }
-  .foot-links { display: flex; gap: 20px; }
-
-  @media (max-width: 860px) {
-    .preview-grid { grid-template-columns: repeat(2, 1fr); }
-    .feature-grid { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 900px) { .home-split { grid-template-columns: 1fr; gap: 34px; } }
   @media (max-width: 640px) {
-    nav { padding: 18px 20px; }
-    .wrap { padding: 0 20px; }
-    header.hero { padding: 100px 0 70px; }
-    nav .links { gap: 16px; }
-    nav a.navlink.hide-mobile { display: none; }
-    .preview-grid { grid-template-columns: 1fr 1fr; }
-    section.features { padding: 80px 0 90px; }
-    footer.cta-footer { padding: 90px 0 50px; }
+    header.hero { padding: 90px 0 66px; }
     .roles-row { flex-direction: column; align-items: flex-start; gap: 12px; }
   }
 </style>
 </head>
 <body>
 
-  <nav>
-    <a class="brand" href="#top">
-      <img src="icon.png" alt="Kairos" width="300" height="300" />
+<div id="scroll-progress"></div>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <img src="icon.png" alt="" width="300" height="300" />
       Kairos
     </a>
-    <div class="links">
-      <a class="navlink hide-mobile" href="#features">Features</a>
-      <a class="navlink hide-mobile" href="#stack">Platforms</a>
-      <a class="navlink" href="privacy">Privacy</a>
-      <a class="navlink" href="mailto:team@kairosapp.dev">Contact</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" hidden>Menu</button>
+    <div class="nav-links" id="nav-links">
+      <a class="navlink" href="/features">Features</a>
+      <a class="navlink" href="/rotations">Rotations</a>
+      <a class="navlink" href="/pricing">Pricing</a>
+      <a class="navlink" href="/faq">FAQ</a>
+      <a class="navlink" href="/support">Support</a>
+      <a class="navlink" href="/changelog">Changelog</a>
+      <a class="nav-cta" href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">Get the app</a>
     </div>
-  </nav>
+  </div>
+</nav>
 
-  <main>
+<main id="main">
+
   <header class="hero" id="top">
     <div class="wrap">
       <p class="eyebrow">Native iOS · iPadOS · watchOS · macOS</p>
@@ -598,17 +237,27 @@
         <span>Guesswork</span>
         <span>Out of Shift Work</span>
       </h1>
-      <p class="sub">Kairos is a premium app for firefighters, medics, police, and shift-based crews — track rotating schedules, share them with coworkers, and never miss a shift again.</p>
+      <p class="sub">Kairos is a premium app for firefighters, medics, police, and shift-based crews — track rotating schedules, share them with a 6-character code, and never miss a shift again.</p>
       <div class="cta-row">
-        <a class="btn btn-primary" href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">Download for iOS, iPadOS and MacOS</a>
-        <a class="btn btn-secondary" href="#features">See how it works</a>
+        <a class="appstore-badge" href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">
+          <svg viewBox="0 0 384 512" aria-hidden="true" focusable="false"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+          <span class="ab-text">
+            <span class="ab-small">Download on the</span>
+            <span class="ab-big">App Store</span>
+          </span>
+        </a>
+        <a class="btn btn-secondary" href="/rotations">Try the rotation simulator</a>
       </div>
+      <p class="rating-line">
+        <span class="stars" aria-hidden="true">★★★★★</span>
+        5.0 on the App Store · Free to download · Version 2.1 · Requires iOS 26.5 or later
+      </p>
       <div class="platforms">
-        <span class="platform-badge glass-dark">iOS 26.5+</span>
-        <span class="platform-badge glass-dark">iPadOS</span>
-        <span class="platform-badge glass-dark">macOS</span>
-        <span class="platform-badge glass-dark">watchOS Companion</span>
-        <span class="platform-badge glass-dark">Home Screen Widgets</span>
+        <span class="platform-badge glass-dark is-static">iOS 26.5+</span>
+        <span class="platform-badge glass-dark is-static">iPadOS</span>
+        <span class="platform-badge glass-dark is-static">macOS</span>
+        <span class="platform-badge glass-dark is-static">watchOS Companion</span>
+        <span class="platform-badge glass-dark is-static">Home Screen Widgets</span>
       </div>
     </div>
   </header>
@@ -617,13 +266,13 @@
     <div class="wrap">
       <div class="roles-row">
         <span class="roles-label">Built for</span>
-        <div class="roles-list">
-          <span class="role-tag mono">Firefighters</span>
-          <span class="role-tag mono">Medical</span>
-          <span class="role-tag mono">Law Enforcement</span>
-          <span class="role-tag mono">Industrial</span>
-          <span class="role-tag mono">Transportation</span>
-          <span class="role-tag mono">Hospitality</span>
+        <div class="tag-row">
+          <span class="tag">Firefighters</span>
+          <span class="tag">Medical</span>
+          <span class="tag">Law Enforcement</span>
+          <span class="tag">Industrial</span>
+          <span class="tag">Transportation</span>
+          <span class="tag">Hospitality</span>
         </div>
       </div>
     </div>
@@ -631,125 +280,301 @@
 
   <div class="preview-band">
     <div class="wrap">
-      <div class="preview-grid">
-        <div class="preview-cell glass-dark reveal" style="--reveal-i:0">
-          <p class="num mono">10+</p>
-          <p class="label">Preset Rotations</p>
+      <div class="grid-4">
+        <div class="stat-cell glass-dark reveal" style="--reveal-i:0">
+          <p class="num mono"><span data-count-to="8" data-count-suffix="">8</span></p>
+          <p class="label">Rotations you can simulate</p>
         </div>
-        <div class="preview-cell glass-dark reveal" style="--reveal-i:1">
-          <p class="num mono">6</p>
-          <p class="label">Char Access Codes</p>
+        <div class="stat-cell glass-dark reveal" style="--reveal-i:1">
+          <p class="num mono"><span data-count-to="6">6</span></p>
+          <p class="label">Char access codes</p>
         </div>
-        <div class="preview-cell glass-dark reveal" style="--reveal-i:2">
+        <div class="stat-cell glass-dark reveal" style="--reveal-i:2">
           <p class="num mono">AES-256</p>
-          <p class="label">Encrypted Recovery</p>
+          <p class="label">Encrypted recovery</p>
         </div>
-        <div class="preview-cell glass-dark reveal" style="--reveal-i:3">
-          <p class="num mono">24/7</p>
-          <p class="label">Live Duty Status</p>
+        <div class="stat-cell glass-dark reveal" style="--reveal-i:3">
+          <p class="num mono"><span data-count-to="0">0</span></p>
+          <p class="label">Accounts required</p>
         </div>
       </div>
     </div>
   </div>
 
-  <section class="features" id="features">
+  <!-- Interactive: live rotation preview, teased on the home page -->
+  <section class="section-ink">
     <div class="wrap">
-      <div class="features-head">
-        <div>
-          <p class="eyebrow-dark">Built for real shifts</p>
-          <h2>Everything a rotation needs</h2>
+      <p class="eyebrow">Interactive preview</p>
+      <h2 class="section-title">See your rotation, right now</h2>
+      <p class="lede">Pick the schedule you actually work. This is the same maths the app runs — a live duty status, a running countdown, and a colour-coded month you can page through. Nothing is sent anywhere.</p>
+
+      <div class="sim glass-dark is-static" id="sim" hidden>
+        <div class="field-row">
+          <div class="field">
+            <label for="sim-pattern">Rotation</label>
+            <select id="sim-pattern">
+              <option value="24-48">24/48</option>
+              <option value="48-96">48/96</option>
+              <option value="kelly">Kelly</option>
+              <option value="panama">Panama (2-2-3)</option>
+              <option value="dupont">DuPont</option>
+              <option value="pitman">Pitman nights (2-3-2)</option>
+              <option value="4-on-4-off">4 on / 4 off</option>
+              <option value="5-2">5 on / 2 off</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="sim-start">Cycle start date</label>
+            <input type="date" id="sim-start" />
+          </div>
+          <div class="field">
+            <label for="sim-today-wrap">View</label>
+            <span id="sim-today-wrap"><button class="btn btn-secondary btn-sm" type="button" id="sim-today">Jump to today</button></span>
+          </div>
+        </div>
+
+        <p class="mono" id="sim-blurb" style="font-size:13px;line-height:1.7;opacity:0.7;margin:0 0 24px;max-width:700px;"></p>
+
+        <div class="sim-status">
+          <div class="duty-ring" id="sim-ring" role="img" aria-label="Progress through the current shift">
+            <span id="sim-ring-pct">0%</span>
+          </div>
+          <div class="sim-status-text">
+            <span class="sim-status-label">Status right now</span>
+            <span class="sim-status-value" id="sim-status-value">Off duty</span>
+            <span class="sim-countdown" id="sim-countdown" aria-live="polite"></span>
+          </div>
+          <div class="sim-status-text">
+            <span class="sim-status-label">One full cycle</span>
+            <div class="cycle-strip" id="sim-cycle-strip"></div>
+          </div>
+        </div>
+
+        <div class="cal-head">
+          <span class="cal-month" id="sim-month"></span>
+          <div class="cal-nav">
+            <button type="button" id="sim-prev" aria-label="Previous month">&#8249;</button>
+            <button type="button" id="sim-next" aria-label="Next month">&#8250;</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="sim-grid"></div>
+
+        <div class="legend">
+          <span><i class="k-on"></i> Day shift</span>
+          <span><i class="k-night"></i> Night shift</span>
+          <span><i class="k-off"></i> Off duty</span>
+          <span><i class="k-today"></i> Today</span>
+        </div>
+
+        <div class="sim-summary">
+          <div class="stat-cell glass-dark is-static">
+            <p class="num mono" id="sim-sum-on">0</p>
+            <p class="label">Shifts per cycle</p>
+          </div>
+          <div class="stat-cell glass-dark is-static">
+            <p class="num mono" id="sim-sum-off">0</p>
+            <p class="label">Days off per cycle</p>
+          </div>
+          <div class="stat-cell glass-dark is-static">
+            <p class="num mono" id="sim-sum-hours">0</p>
+            <p class="label">Avg hours / week</p>
+          </div>
+          <div class="stat-cell glass-dark is-static">
+            <p class="num mono" id="sim-sum-cycle">0</p>
+            <p class="label">Days in cycle</p>
+          </div>
         </div>
       </div>
-      <p class="features-lede">No accounts, no servers holding your data — your schedule lives on your device and syncs privately through your own iCloud. Sharing is opt-in, read-only, and revocable any time.</p>
-      <div class="feature-grid">
-        <div class="feature-card glass-light reveal" style="--reveal-i:0">
+
+      <p class="mono" id="sim-fallback" style="opacity:0.65;font-size:13px;">
+        The interactive rotation simulator needs JavaScript. Every rotation it covers —
+        24/48, 48/96, Kelly, Panama, DuPont, Pitman, 4 on / 4 off and 5 on / 2 off —
+        is described in full on the <a href="/rotations" style="color:var(--flame)">rotations page</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-paper" id="features">
+    <div class="wrap">
+      <p class="eyebrow">Built for real shifts</p>
+      <h2 class="section-title">Everything a rotation needs</h2>
+      <p class="lede">No accounts, no servers holding your data — your schedule lives on your device and syncs privately through your own iCloud. Sharing is opt-in, read-only, and revocable any time.</p>
+
+      <div class="grid-3">
+        <div class="card glass-light reveal" style="--reveal-i:0">
           <span class="fnum">01 · Dashboard</span>
           <h3>Know your status</h3>
           <p>A real-time duty ring and countdown badge shows exactly where you stand in your rotation, at a glance, on iPhone and iPad.</p>
         </div>
-        <div class="feature-card glass-light reveal" style="--reveal-i:1">
+        <div class="card glass-light reveal" style="--reveal-i:1">
           <span class="fnum">02 · Calendar</span>
           <h3>Full month control</h3>
           <p>Color-coded month grid with tap-to-override controls for vacation days, extra shifts, and on-call assignments.</p>
         </div>
-        <div class="feature-card glass-light reveal" style="--reveal-i:2">
+        <div class="card glass-light reveal" style="--reveal-i:2">
           <span class="fnum">03 · Sharing</span>
           <h3>Share your schedule</h3>
-          <p>Generate a one-time 6-character access code so coworkers and family can see your availability, read-only, without an account.</p>
+          <p>Generate a 6-character access code so coworkers and family can see your availability, read-only, without an account.</p>
         </div>
-        <div class="feature-card glass-light reveal" style="--reveal-i:3">
+        <div class="card glass-light reveal" style="--reveal-i:3">
           <span class="fnum">04 · Recovery</span>
           <h3>Private by design</h3>
           <p>Your schedule lives on your device. AES-256 encrypted recovery keys let you back up and restore across devices without an account.</p>
         </div>
-        <div class="feature-card glass-light reveal" style="--reveal-i:4">
+        <div class="card glass-light reveal" style="--reveal-i:4">
           <span class="fnum">05 · Apple Watch</span>
           <h3>On your wrist</h3>
           <p>A companion watchOS app with a progress ring, 7-day shift forecast, and full calendar — right where you need it.</p>
         </div>
-        <div class="feature-card glass-light reveal" style="--reveal-i:5">
+        <div class="card glass-light reveal" style="--reveal-i:5">
           <span class="fnum">06 · Widgets</span>
           <h3>Home screen, ready</h3>
           <p>Small, medium, and large widgets with configurable schedule selection keep your status visible without opening the app.</p>
         </div>
       </div>
+
+      <p style="margin-top:36px">
+        <a class="btn btn-dark" href="/features">Explore every feature</a>
+      </p>
     </div>
   </section>
 
-  <section class="stack" id="stack">
+  <!-- Interactive: screenshot gallery with lightbox -->
+  <section class="section-ink">
     <div class="wrap">
-      <p class="eyebrow">Built with</p>
-      <h2>Native from the ground up</h2>
-      <div class="stack-tags">
-        <span class="stack-tag glass-dark">Swift 5 / SwiftUI</span>
-        <span class="stack-tag glass-dark">WidgetKit</span>
-        <span class="stack-tag glass-dark">CloudKit Sync</span>
-        <span class="stack-tag glass-dark">StoreKit 2</span>
-        <span class="stack-tag glass-dark">CryptoKit AES-256</span>
-        <span class="stack-tag glass-dark">Liquid Glass UI</span>
-      </div>
-    </div>
-  </section>
-  </main>
-
-  <footer class="cta-footer">
-    <div class="wrap">
-      <p class="eyebrow-black">Kairos Pro</p>
-      <h2>Never Miss<br />a Shift Again</h2>
-      <p class="tag">Kairos Pro unlocks the Apple Watch companion and unlimited shared coworker schedules — monthly or yearly, with a 16% annual discount.</p>
-      <a class="btn-dark" href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">Download for iOS, iPadOS and MacOS</a>
-
-      <div class="foot-bottom">
-        <span>&copy; 2026 KairosDev LLC</span>
-        <div class="foot-links">
-          <a href="privacy">Privacy Policy</a>
-          <a href="mailto:team@kairosapp.dev">team@kairosapp.dev</a>
+      <div class="home-split">
+        <div>
+          <p class="eyebrow">A look inside</p>
+          <h2 class="section-title">Designed to be read in three seconds</h2>
+          <p class="lede" style="margin-bottom:26px">Kairos is built so a spouse glancing at a widget, or a crew member checking a shared code, gets the answer immediately. Tap any screen to open it full size.</p>
+          <a class="btn btn-secondary" href="/features#panel-watch">See the Watch &amp; widgets</a>
+        </div>
+        <div class="shots">
+          <button class="shot" type="button" data-caption="Dashboard — live duty status and shift countdown" data-full="assets/shots/shot-1-working.webp">
+            <img src="assets/shots/shot-1-working.webp" width="626" height="1354" loading="lazy" decoding="async" alt="Kairos dashboard showing live on-duty status and shift countdown" />
+            <figcaption>Dashboard</figcaption>
+          </button>
+          <button class="shot" type="button" data-caption="Calendar — colour-coded month view of the full rotation" data-full="assets/shots/shot-2-calendar.webp">
+            <img src="assets/shots/shot-2-calendar.webp" width="626" height="1354" loading="lazy" decoding="async" alt="Kairos calendar showing a colour-coded month of shifts" />
+            <figcaption>Calendar</figcaption>
+          </button>
+          <button class="shot" type="button" data-caption="Vacation — overriding scheduled days off" data-full="assets/shots/shot-3-vacation.webp">
+            <img src="assets/shots/shot-3-vacation.webp" width="626" height="1354" loading="lazy" decoding="async" alt="Kairos vacation override screen" />
+            <figcaption>Vacation</figcaption>
+          </button>
         </div>
       </div>
     </div>
-  </footer>
+  </section>
 
-  <script>
-    (function () {
-      if (!('IntersectionObserver' in window)) {
-        document.querySelectorAll('.reveal').forEach(function (el) {
-          el.classList.add('revealed');
-        });
-        return;
-      }
-      var observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-      document.querySelectorAll('.reveal').forEach(function (el) {
-        observer.observe(el);
-      });
-    })();
-  </script>
+  <!-- Interactive: access-code demo -->
+  <section class="section-paper">
+    <div class="wrap">
+      <p class="eyebrow">Sharing, without accounts</p>
+      <h2 class="section-title">One code. That's the whole setup.</h2>
+      <p class="lede">Your family does not sign up for anything. You generate a code, you text it to them, and their copy of Kairos starts showing your live status. Roll a sample code below to see the format.</p>
 
+      <div class="code-demo">
+        <span class="code-box mono" id="code-box">KAIROS</span>
+        <button class="btn btn-dark btn-sm" type="button" id="code-roll" hidden>Roll a new code</button>
+        <button class="btn btn-secondary btn-sm" type="button" id="code-copy" hidden style="color:var(--ink);border-color:var(--line-on-paper)">Copy</button>
+      </div>
+      <p class="code-status mono" id="code-status" aria-live="polite" style="margin-top:16px">Six characters, no ambiguous letters or digits.</p>
+
+      <div class="grid-3" style="margin-top:40px">
+        <div class="card glass-light reveal" style="--reveal-i:0">
+          <span class="fnum">Step 01</span>
+          <h3>Generate</h3>
+          <p>Create a share code from your schedule. It represents a read-only view — never edit access.</p>
+        </div>
+        <div class="card glass-light reveal" style="--reveal-i:1">
+          <span class="fnum">Step 02</span>
+          <h3>Send</h3>
+          <p>Text it, say it out loud, write it on the fridge. Six characters is short enough to pass along verbally.</p>
+        </div>
+        <div class="card glass-light reveal" style="--reveal-i:2">
+          <span class="fnum">Step 03</span>
+          <h3>Revoke</h3>
+          <p>Change your mind later and the code stops working. Sharing stays opt-in and reversible.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-ink" id="stack">
+    <div class="wrap" style="text-align:center">
+      <p class="eyebrow">Built with</p>
+      <h2 class="section-title">Native from the ground up</h2>
+      <div class="tag-row" style="justify-content:center;margin-top:26px">
+        <span class="tag glass-dark is-static">Swift / SwiftUI</span>
+        <span class="tag glass-dark is-static">WidgetKit</span>
+        <span class="tag glass-dark is-static">CloudKit Sync</span>
+        <span class="tag glass-dark is-static">StoreKit 2</span>
+        <span class="tag glass-dark is-static">CryptoKit AES-256</span>
+        <span class="tag glass-dark is-static">Liquid Glass UI</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="cta-footer">
+  <div class="wrap">
+    <p class="eyebrow-black">Kairos Pro</p>
+    <h2>Never Miss<br />a Shift Again</h2>
+    <p class="tag-line">Free to download. Kairos Pro unlocks the Apple Watch companion and unlimited shared coworker schedules, from $4.99 a month.</p>
+    <a class="appstore-badge" href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">
+      <svg viewBox="0 0 384 512" aria-hidden="true" focusable="false"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+      <span class="ab-text">
+        <span class="ab-small">Download on the</span>
+        <span class="ab-big">App Store</span>
+      </span>
+    </a>
+
+    <div class="foot-nav">
+      <div class="foot-col">
+        <h4>Product</h4>
+        <a href="/features">Features</a>
+        <a href="/rotations">Rotations</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/changelog">Changelog</a>
+      </div>
+      <div class="foot-col">
+        <h4>Help</h4>
+        <a href="/faq">FAQ</a>
+        <a href="/support">Support</a>
+        <a href="mailto:team@kairosapp.dev">Email us</a>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Use (EULA)</a>
+      </div>
+      <div class="foot-col">
+        <h4>Download</h4>
+        <a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">iPhone &amp; iPad</a>
+        <a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">Mac</a>
+        <a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">Apple Watch</a>
+      </div>
+    </div>
+
+    <div class="foot-bottom">
+      <span>&copy; 2026 KairosDev LLC</span>
+      <span>Made for the people who work while everyone else sleeps.</span>
+    </div>
+  </div>
+</footer>
+
+<button id="to-top" type="button" aria-label="Back to top">&#8593;</button>
+
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="App screenshot">
+  <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close">&times;</button>
+  <button class="lightbox-prev" id="lightbox-prev" type="button" aria-label="Previous screenshot">&#8249;</button>
+  <img id="lightbox-img" src="" alt="" />
+  <button class="lightbox-next" id="lightbox-next" type="button" aria-label="Next screenshot">&#8250;</button>
+  <p class="lightbox-cap" id="lightbox-cap"></p>
+</div>
+
+<script src="assets/site.js"></script>
 </body>
 </html>
