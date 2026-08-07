@@ -581,6 +581,34 @@ p.lede {
   opacity: 1;
 }
 .tab-panel[hidden] { display: none; }
+
+/* ---------- No-JS fallback for tabs ----------
+   Without JS the tablist cannot switch panels, so hiding the inactive
+   panels would bury real content. Instead we drop the tab buttons and
+   stack every panel, each introduced by its own visible label. The
+   [hidden] attribute stays in the markup for the JS path. */
+html:not(.js) [role="tablist"] { display: none; }
+html:not(.js) .tab-panel[hidden] { display: block; }
+html:not(.js) .tab-panel {
+  border-top: 1px solid rgba(244, 241, 234, 0.12);
+  padding-top: 28px;
+  margin-top: 28px;
+}
+html:not(.js) .tab-panel:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+html:not(.js) .tab-panel::before {
+  content: attr(data-tab-label);
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--flame);
+  margin-bottom: 16px;
+}
 .tab-panel {
   animation: fade-in 0.35s ease;
 }

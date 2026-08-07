@@ -261,6 +261,7 @@ def features_page():
     )
     panels = "\n".join(
         f'      <div class="tab-panel" role="tabpanel" id="panel-{k}" aria-labelledby="tab-{k}"'
+        f' data-tab-label="{label}"'
         f'{"" if i == 0 else " hidden"}>{body}\n      </div>'
         for i, (k, label, body) in enumerate(FEATURE_TABS)
     )
