@@ -113,6 +113,16 @@ select:focus-visible,
   opacity: 1;
   transform: translateY(0);
 }
+/* Reveal is decoration, never a gate on content. If the reader prefers
+   reduced motion, if the page is being printed, or if the document has
+   been marked done loading, show everything outright. */
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+}
+@media print {
+  .js .reveal { opacity: 1 !important; transform: none !important; }
+}
+.js.reveal-off .reveal { opacity: 1; transform: none; }
 
 /* ---------- Liquid glass surfaces ---------- */
 .glass-dark {

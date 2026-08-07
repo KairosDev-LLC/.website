@@ -22,10 +22,19 @@
     var els = $$('.reveal');
     if (!els.length) return;
 
-    if (!('IntersectionObserver' in window)) {
+    function showAll() {
       els.forEach(function (el) { el.classList.add('revealed'); });
+    }
+
+    // Respect reduced motion, and bail out to plain visible content if the
+    // browser lacks IntersectionObserver.
+    var reduced = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced || !('IntersectionObserver' in window)) {
+      showAll();
       return;
     }
+
     var obs = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
@@ -35,6 +44,25 @@
       });
     }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
     els.forEach(function (el) { obs.observe(el); });
+
+    // Failsafe: content must never be permanently invisible. If the observer
+    // never fired for anything that is plainly on screen, treat it as broken
+    // (headless capture, exotic browser, viewport resized after load) and
+    // drop reveal entirely rather than leaving the page blank.
+    function rescue() {
+      var onscreen = els.filter(function (el) {
+        var r = el.getBoundingClientRect();
+        return r.top < window.innerHeight && r.bottom > 0;
+      });
+      var shown = onscreen.filter(function (el) {
+        return el.classList.contains('revealed');
+      });
+      if (onscreen.length && !shown.length) {
+        document.documentElement.classList.add('reveal-off');
+        showAll();
+      }
+    }
+    window.addEventListener('load', function () { setTimeout(rescue, 800); });
   }
 
   /* ----------------------------------------------------------------------
