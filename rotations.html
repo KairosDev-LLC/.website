@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shift rotations explained — Kairos</title>
+<meta name="description" content="Kelly, Panama, DuPont, 24/48, 48/96, Pitman, 4 on 4 off and 5 on 2 off — cycle lengths, average weekly hours, and an interactive simulator that shows any of them on a live calendar." />
+<link rel="icon" href="/favicon.ico" sizes="48x48" />
+<link rel="icon" href="/icon.png" type="image/png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="theme-color" content="#0b0b0f" />
+<meta name="color-scheme" content="dark" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="apple-mobile-web-app-title" content="Kairos" />
+<meta name="apple-itunes-app" content="app-id=6792157855" />
+
+<meta property="og:title" content="Shift rotations explained — Kairos" />
+<meta property="og:description" content="Kelly, Panama, DuPont, 24/48, 48/96, Pitman, 4 on 4 off and 5 on 2 off — cycle lengths, average weekly hours, and an interactive simulator that shows any of them on a live calendar." />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Kairos" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://www.kairosapp.dev/rotations" />
+<meta property="og:image" content="https://www.kairosapp.dev/icon.png" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Shift rotations explained — Kairos" />
+<meta name="twitter:description" content="Kelly, Panama, DuPont, 24/48, 48/96, Pitman, 4 on 4 off and 5 on 2 off — cycle lengths, average weekly hours, and an interactive simulator that shows any of them on a live calendar." />
+<meta name="twitter:image" content="https://www.kairosapp.dev/icon.png" />
+<link rel="canonical" href="https://www.kairosapp.dev/rotations" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.kairosapp.dev/" },
+    { "@type": "ListItem", "position": 2, "name": "Rotations", "item": "https://www.kairosapp.dev/rotations" }
+  ]
+}
+</script>
+
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="/assets/site.css" />
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <img src="/icon.png" alt="" width="300" height="300" />
+      Kairos
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" hidden>Menu</button>
+    <div class="nav-links" id="nav-links">
+      <a class="navlink" href="/features">Features</a>
+      <a class="navlink" href="/rotations">Rotations</a>
+      <a class="navlink" href="/pricing">Pricing</a>
+      <a class="navlink" href="/faq">FAQ</a>
+      <a class="navlink" href="/support">Support</a>
+      <a class="navlink" href="/changelog">Changelog</a>
+      <a class="nav-cta" href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">Get the app</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+
+  <header class="page-head">
+    <div class="wrap">
+      <p class="breadcrumbs"><a href="/">Kairos</a> / Rotations</p>
+      <h1>Rotations</h1>
+      <p class="page-sub">Eight real shift rotations, what each one actually costs you in hours, and a simulator that draws any of them onto a live calendar.</p>
+    </div>
+  </header>
+
+  <section class="section-ink">
+    <div class="wrap">
+      <p class="eyebrow">Interactive</p>
+      <h2 class="section-title">Rotation simulator</h2>
+      <p class="lede">Choose a rotation and the day your cycle started. This runs the same arithmetic the app does — live duty status, a running countdown, and a month you can page through. Everything is computed in your browser; nothing is sent anywhere.</p>
+
+      <div class="sim glass-dark is-static" id="sim" hidden>
+        <div class="field-row">
+          <div class="field">
+            <label for="sim-pattern">Rotation</label>
+            <select id="sim-pattern">
+              <option value="24-48">24/48</option>
+              <option value="48-96">48/96</option>
+              <option value="kelly">Kelly</option>
+              <option value="panama">Panama (2-2-3)</option>
+              <option value="dupont">DuPont</option>
+              <option value="pitman">Pitman nights (2-3-2)</option>
+              <option value="4-on-4-off">4 on / 4 off</option>
+              <option value="5-2">5 on / 2 off</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="sim-start">Cycle start date</label>
+            <input type="date" id="sim-start" />
+          </div>
+          <div class="field">
+            <label for="sim-today-wrap">View</label>
+            <span id="sim-today-wrap"><button class="btn btn-secondary btn-sm" type="button" id="sim-today">Jump to today</button></span>
+          </div>
+        </div>
+
+        <p class="mono" id="sim-blurb" style="font-size:13px;line-height:1.7;opacity:0.7;margin:0 0 24px;max-width:700px;"></p>
+
+        <div class="sim-status">
+          <div class="duty-ring" id="sim-ring" role="img" aria-label="Progress through the current shift">
+            <span id="sim-ring-pct">0%</span>
+          </div>
+          <div class="sim-status-text">
+            <span class="sim-status-label">Status right now</span>
+            <span class="sim-status-value" id="sim-status-value">Off duty</span>
+            <span class="sim-countdown" id="sim-countdown" aria-live="polite"></span>
+          </div>
+          <div class="sim-status-text">
+            <span class="sim-status-label">One full cycle</span>
+            <div class="cycle-strip" id="sim-cycle-strip"></div>
+          </div>
+        </div>
+
+        <div class="cal-head">
+          <span class="cal-month" id="sim-month"></span>
+          <div class="cal-nav">
+            <button type="button" id="sim-prev" aria-label="Previous month">&#8249;</button>
+            <button type="button" id="sim-next" aria-label="Next month">&#8250;</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="sim-grid"></div>
+
+        <div class="legend">
+          <span><i class="k-on"></i> Day shift</span>
+          <span><i class="k-night"></i> Night shift</span>
+          <span><i class="k-off"></i> Off duty</span>
+          <span><i class="k-today"></i> Today</span>
+        </div>
+
+        <div class="sim-summary">
+          <div class="stat-cell glass-dark is-static">
+            <p class="num mono" id="sim-sum-on">0</p>
+            <p class="label">Shifts per cycle</p>
+          </div>
+          <div class="stat-cell glass-dark is-static">
+            <p class="num mono" id="sim-sum-off">0</p>
+            <p class="label">Days off per cycle</p>
+          </div>
+          <div class="stat-cell glass-dark is-static">
+            <p class="num mono" id="sim-sum-hours">0</p>
+            <p class="label">Avg hours / week</p>
+          </div>
+          <div class="stat-cell glass-dark is-static">
+            <p class="num mono" id="sim-sum-cycle">0</p>
+            <p class="label">Days in cycle</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="mono" id="sim-fallback" style="opacity:0.65;font-size:13px;">
+        The simulator needs JavaScript, but every rotation it covers is written out in full below.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-paper">
+    <div class="wrap">
+      <p class="eyebrow">Side by side</p>
+      <h2 class="section-title">All eight at a glance</h2>
+      <p class="lede">Cycle length is how many days before the pattern repeats. Average hours per week is the honest number over a full cycle, not a good week.</p>
+      <div class="table-scroll">
+        <table class="compare">
+          <caption>Kelly, Panama, DuPont, 24/48 and 48/96 ship as presets in the app. Anything else can be built as a custom weekly layout.</caption>
+          <thead>
+            <tr><th scope="col">Rotation</th><th scope="col">Cycle</th><th scope="col">Avg hours</th><th scope="col">Shape</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>24/48</td><td>3-day cycle</td><td>56 hrs/wk</td><td>One 24-hour shift, then 48 hours off.</td></tr>
+            <tr><td>48/96</td><td>6-day cycle</td><td>56 hrs/wk</td><td>Two 24-hour shifts, then four days off.</td></tr>
+            <tr><td>Kelly</td><td>9-day cycle</td><td>56 hrs/wk</td><td>Three 24-hour shifts on alternating days, then four off.</td></tr>
+            <tr><td>Panama (2-2-3)</td><td>14-day cycle</td><td>42 hrs/wk</td><td>Two on, two off, three on — 12-hour shifts.</td></tr>
+            <tr><td>Pitman nights (2-3-2)</td><td>14-day cycle</td><td>42 hrs/wk</td><td>The same 2-3-2 structure, worked on nights.</td></tr>
+            <tr><td>DuPont</td><td>28-day cycle</td><td>42 hrs/wk</td><td>Rotating nights and days with a seven-day break.</td></tr>
+            <tr><td>4 on / 4 off</td><td>8-day cycle</td><td>42 hrs/wk</td><td>Four 12-hour shifts, then four days off.</td></tr>
+            <tr><td>5 on / 2 off</td><td>7-day cycle</td><td>40 hrs/wk</td><td>The fixed weekday week.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-paper" style="padding-top:0">
+    <div class="wrap">
+      <h2 class="section-title">In detail</h2>
+      <div class="grid-2">
+        <div class="card glass-light reveal" style="--reveal-i:0">
+          <span class="fnum">3-day cycle · 56 hrs/wk</span>
+          <h3>24/48</h3>
+          <p><strong>One 24-hour shift, then 48 hours off.</strong></p>
+          <p>The default single-platoon fire schedule. You work one full day, then get two. Simple to hold in your head, but the working day walks through the week, so it never lands on the same weekday twice in a row.</p>
+        </div>
+        <div class="card glass-light reveal" style="--reveal-i:1">
+          <span class="fnum">6-day cycle · 56 hrs/wk</span>
+          <h3>48/96</h3>
+          <p><strong>Two 24-hour shifts, then four days off.</strong></p>
+          <p>The same 56-hour average as 24/48, rearranged so all of your time off arrives in one four-day block. Popular with crews who commute a long way or want real recovery time.</p>
+        </div>
+        <div class="card glass-light reveal" style="--reveal-i:2">
+          <span class="fnum">9-day cycle · 56 hrs/wk</span>
+          <h3>Kelly</h3>
+          <p><strong>Three 24-hour shifts on alternating days, then four off.</strong></p>
+          <p>Named after Chicago's Mayor Kelly. Work, off, work, off, work, then four consecutive days off. It splits the difference between the daily churn of 24/48 and the long blocks of 48/96.</p>
+        </div>
+        <div class="card glass-light reveal" style="--reveal-i:3">
+          <span class="fnum">14-day cycle · 42 hrs/wk</span>
+          <h3>Panama (2-2-3)</h3>
+          <p><strong>Two on, two off, three on — 12-hour shifts.</strong></p>
+          <p>The classic slow-rotating 2-2-3. Over a fortnight it gives you every other weekend off in full, which is why dispatch centres and law enforcement lean on it.</p>
+        </div>
+        <div class="card glass-light reveal" style="--reveal-i:4">
+          <span class="fnum">14-day cycle · 42 hrs/wk</span>
+          <h3>Pitman nights (2-3-2)</h3>
+          <p><strong>The same 2-3-2 structure, worked on nights.</strong></p>
+          <p>Structurally identical to the Panama but on the night side of the roster. Same every-other-weekend rhythm, same 42-hour average, very different sleep schedule.</p>
+        </div>
+        <div class="card glass-light reveal" style="--reveal-i:5">
+          <span class="fnum">28-day cycle · 42 hrs/wk</span>
+          <h3>DuPont</h3>
+          <p><strong>Rotating nights and days with a seven-day break.</strong></p>
+          <p>Four nights, three off, three days, one off, three nights, three off, four days, then seven consecutive days off. The long break at the end is the whole point, and the reason people tolerate the rotation.</p>
+        </div>
+        <div class="card glass-light reveal" style="--reveal-i:6">
+          <span class="fnum">8-day cycle · 42 hrs/wk</span>
+          <h3>4 on / 4 off</h3>
+          <p><strong>Four 12-hour shifts, then four days off.</strong></p>
+          <p>Very common on industrial, plant and transportation crews. An even split with a cycle that fits neatly into an eight-day rhythm, though it drifts against the calendar week.</p>
+        </div>
+        <div class="card glass-light reveal" style="--reveal-i:7">
+          <span class="fnum">7-day cycle · 40 hrs/wk</span>
+          <h3>5 on / 2 off</h3>
+          <p><strong>The fixed weekday week.</strong></p>
+          <p>Included as a baseline so you can see what a rotating schedule actually costs you compared to a fixed Monday-to-Friday. It is the only pattern here that repeats on the same weekdays forever.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-ink">
+    <div class="wrap">
+      <p class="eyebrow">Not on this list?</p>
+      <h2 class="section-title">Build your own</h2>
+      <p class="lede">Plenty of departments run something invented locally. Kairos lets you lay out a custom weekly pattern and set the cycle start date to the day your rotation actually began, so the app matches the roster on the wall rather than a textbook.</p>
+      <p><a class="appstore-badge" href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">
+          <svg viewBox="0 0 384 512" aria-hidden="true" focusable="false"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+          <span class="ab-text">
+            <span class="ab-small">Download on the</span>
+            <span class="ab-big">App Store</span>
+          </span>
+        </a></p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="cta-footer">
+  <div class="wrap">
+    <p class="eyebrow-black">Kairos Pro</p>
+    <h2>Your Rotation,<br />Already Set Up</h2>
+    <p class="tag-line">Kelly, Panama, DuPont, 24/48 and 48/96 are built in. Custom layouts take about a minute.</p>
+    <a class="appstore-badge" href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">
+          <svg viewBox="0 0 384 512" aria-hidden="true" focusable="false"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+          <span class="ab-text">
+            <span class="ab-small">Download on the</span>
+            <span class="ab-big">App Store</span>
+          </span>
+        </a>
+
+    <div class="foot-nav">
+      <div class="foot-col">
+        <h3>Product</h3>
+        <a href="/features">Features</a>
+        <a href="/rotations">Rotations</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/changelog">Changelog</a>
+      </div>
+      <div class="foot-col">
+        <h3>Help</h3>
+        <a href="/faq">FAQ</a>
+        <a href="/support">Support</a>
+        <a href="mailto:team@kairosapp.dev">Email us</a>
+      </div>
+      <div class="foot-col">
+        <h3>Legal</h3>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Use (EULA)</a>
+      </div>
+      <div class="foot-col">
+        <h3>Download</h3>
+        <a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">iPhone &amp; iPad</a>
+        <a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">Mac</a>
+        <a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">Apple Watch</a>
+      </div>
+    </div>
+
+    <div class="foot-bottom">
+      <span>&copy; 2026 KairosDev LLC</span>
+      <span>Made for the people who work while everyone else sleeps.</span>
+    </div>
+  </div>
+</footer>
+
+<button id="to-top" type="button" aria-label="Back to top">&#8593;</button>
+
+<script src="/assets/site.js"></script>
+</body>
+</html>
