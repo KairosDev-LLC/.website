@@ -163,14 +163,31 @@
         });
       });
 
-      // Honour a #panel-id deep link, else keep the authored default.
-      var hash = window.location.hash.slice(1);
-      var target = hash && btns.filter(function (b) {
-        return b.getAttribute('aria-controls') === hash || b.id === hash;
-      })[0];
-      select(target || btns.filter(function (b) {
-        return b.getAttribute('aria-selected') === 'true';
-      })[0] || btns[0]);
+      // Honour a deep link. Accept the natural short form (#sharing) as well
+      // as the explicit #panel-sharing / #tab-sharing forms, and keep
+      // responding to later hash changes so back/forward works.
+      function btnForHash(hash) {
+        if (!hash) return null;
+        return btns.filter(function (b) {
+          var ctrl = b.getAttribute('aria-controls') || '';
+          return ctrl === hash ||
+                 b.id === hash ||
+                 ctrl.replace(/^panel-/, '') === hash ||
+                 b.id.replace(/^tab-/, '') === hash;
+        })[0] || null;
+      }
+
+      function applyHash(focus) {
+        var btn = btnForHash(window.location.hash.slice(1));
+        if (btn) select(btn, focus);
+      }
+
+      select(btnForHash(window.location.hash.slice(1)) ||
+        btns.filter(function (b) {
+          return b.getAttribute('aria-selected') === 'true';
+        })[0] || btns[0]);
+
+      window.addEventListener('hashchange', function () { applyHash(false); });
     });
   }
 
