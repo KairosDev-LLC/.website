@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>og card</title>
+<link rel="stylesheet" href="/assets/site.css" />
+<style>
+  html, body { margin: 0; padding: 0; background: #0b0b0f; }
+  .card {
+    width: 1200px; height: 630px; box-sizing: border-box;
+    padding: 68px 84px 72px; position: relative; overflow: hidden;
+    background:
+      radial-gradient(900px 520px at 84% 8%, rgba(255,90,31,0.22), transparent 62%),
+      radial-gradient(700px 460px at 6% 96%, rgba(255,90,31,0.10), transparent 60%),
+      #0b0b0f;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand .mark {
+    width: 52px; height: 52px; border-radius: 12px;
+    background: rgba(244,241,234,0.06);
+    border: 1px solid rgba(244,241,234,0.14);
+    padding: 4px;
+  }
+  .brand .name {
+    font-family: var(--serif);
+    font-size: 30px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: #f4f1ea; font-weight: 700;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-size: 78px; line-height: 1.04; margin: 0; color: #f4f1ea;
+    letter-spacing: -0.015em; max-width: 13ch;
+  }
+  .sub {
+    font-family: var(--mono);
+    font-size: 24px; color: rgba(244,241,234,0.74); margin: 30px 0 0;
+    max-width: 44ch; line-height: 1.5;
+  }
+  .row { display: flex; align-items: center; justify-content: space-between; }
+  .chips { display: flex; gap: 12px; flex-wrap: wrap; }
+  .chip {
+    font-family: var(--mono);
+    font-size: 19px; color: rgba(244,241,234,0.86);
+    border: 1px solid rgba(244,241,234,0.22); border-radius: 999px;
+    padding: 10px 20px;
+  }
+  .store {
+    font-family: var(--mono);
+    font-size: 20px; color: #ff5a1f; letter-spacing: 0.08em;
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .rule {
+    position: absolute; left: 0; right: 0; top: 0; height: 6px;
+    background: linear-gradient(90deg, #ff5a1f, rgba(255,90,31,0));
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="rule"></div>
+    <div>
+      <div class="brand"><img class="mark" src="/icon.png" alt="" width="46" height="46" /><span class="name">Kairos</span></div>
+    </div>
+    <div>
+      <h1>Taking the guesswork out of shift work</h1>
+      <p class="sub">Rotating schedules, a live duty countdown, and a colour-coded
+        calendar. Built for firefighters, medics and police.</p>
+    </div>
+    <div class="row">
+      <div class="chips">
+        <span class="chip">24/48</span>
+        <span class="chip">Kelly</span>
+        <span class="chip">Panama</span>
+        <span class="chip">DuPont</span>
+        <span class="chip">48/96</span>
+      </div>
+      <div class="store">On the App Store</div>
+    </div>
+  </div>
+</body>
+</html>
