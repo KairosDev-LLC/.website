@@ -162,14 +162,16 @@
     }
   ],
   "trailingSlash": false,
-  "rewrites": [
+  "redirects": [
     {
       "source": "/vercel.json",
-      "destination": "/deliberately-absent"
+      "destination": "/no-such-path",
+      "permanent": false
     },
     {
       "source": "/.vercelignore",
-      "destination": "/deliberately-absent"
+      "destination": "/no-such-path",
+      "permanent": false
     }
   ]
 }
