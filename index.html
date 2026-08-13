@@ -11,6 +11,7 @@
 <meta name="theme-color" content="#0b0b0f" />
 <meta name="color-scheme" content="dark" />
 <link rel="manifest" href="/manifest.json" />
+<link rel="alternate" type="application/rss+xml" title="Kairos release notes" href="/feed.xml" />
 <meta name="apple-mobile-web-app-title" content="Kairos" />
 <meta name="apple-itunes-app" content="app-id=6792157855" />
 
@@ -212,6 +213,7 @@
 <nav class="site-nav">
   <div class="nav-inner">
     <a class="brand" href="/">
+      <img class="brand-mark" src="/assets/brand-mark.png" alt="" width="128" height="128" />
       kairos
     </a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" hidden>Menu</button>
@@ -233,7 +235,7 @@
             </div>
           </div>
           <div>
-            <h4>By crew</h4>
+            <h4>By first responder</h4>
             <div class="nav-panel-list">
               <a href="/rotations?filter=fire#library">Fire <span class="n">3</span></a>
               <a href="/rotations?filter=ems#library">EMS <span class="n">1</span></a>
@@ -298,11 +300,53 @@
       <h1>Every real shift <em>rotation</em>, drawn onto a live calendar</h1>
       <p>Browse the patterns crews actually work — what each one costs you in
       hours, and how Kairos puts it on your iPhone, iPad, Mac and Watch.</p>
+
+      <div class="stage3d" id="stage3d">
+        <div class="deck" id="deck">
+          <div class="deck-card" data-rot="24-48" style="z-index:10">
+            <img src="/assets/thumbs/24-48.svg" alt="A month of the 24/48 rotation on the Kairos calendar" width="1200" height="854" loading="eager" />
+          </div>
+          <div class="deck-card" data-rot="panama" style="z-index:9">
+            <img src="/assets/thumbs/panama.svg" alt="" width="1200" height="854" loading="lazy" />
+          </div>
+          <div class="deck-card" data-rot="kelly" style="z-index:8">
+            <img src="/assets/thumbs/kelly.svg" alt="" width="1200" height="854" loading="lazy" />
+          </div>
+          <div class="deck-card" data-rot="dupont" style="z-index:7">
+            <img src="/assets/thumbs/dupont.svg" alt="" width="1200" height="854" loading="lazy" />
+          </div>
+          <div class="deck-badges" aria-hidden="true">
+            <div class="deck-badge badge-a"><span class="dot"></span>On duty · 14h left</div>
+            <div class="deck-badge is-night badge-b"><span class="dot"></span>Night shift</div>
+            <div class="deck-badge is-off badge-c"><span class="dot"></span>4 days off</div>
+          </div>
+        </div>
+        <div class="deck-tabs" id="deck-tabs" role="tablist" aria-label="Preview a rotation in 3D">
+          <button class="deck-tab" type="button" role="tab" data-rot="24-48" id="deck-tab-24-48"
+            aria-selected="true" aria-controls="deck" tabindex="0">
+            <span class="dt-name">24/48</span><span class="dt-meta">56 hrs/wk · 3-day cycle</span>
+          </button>
+          <button class="deck-tab" type="button" role="tab" data-rot="panama" id="deck-tab-panama"
+            aria-selected="false" aria-controls="deck" tabindex="-1">
+            <span class="dt-name">Panama</span><span class="dt-meta">42 hrs/wk · 14-day cycle</span>
+          </button>
+          <button class="deck-tab" type="button" role="tab" data-rot="kelly" id="deck-tab-kelly"
+            aria-selected="false" aria-controls="deck" tabindex="-1">
+            <span class="dt-name">Kelly</span><span class="dt-meta">56 hrs/wk · 9-day cycle</span>
+          </button>
+          <button class="deck-tab" type="button" role="tab" data-rot="dupont" id="deck-tab-dupont"
+            aria-selected="false" aria-controls="deck" tabindex="-1">
+            <span class="dt-name">DuPont</span><span class="dt-meta">42 hrs/wk · 28-day cycle</span>
+          </button>
+        </div>
+        <p class="stage-hint">Pick a rotation, then move your pointer to look around it.</p>
+      </div>
+
     </div>
   </header>
 
   <div class="wrap">
-    <div class="chip-row" id="chip-row" role="group" aria-label="Filter rotations and features">
+    <div class="chip-row" id="chip-row" role="group" aria-label="Filter by first responder service and shift pattern">
         <button class="chip" type="button" data-filter="all" aria-pressed="true"><span>All</span><span class="n">14</span></button>
         <button class="chip" type="button" data-filter="fire" aria-pressed="false"><span>Fire</span><span class="n">3</span></button>
         <button class="chip" type="button" data-filter="ems" aria-pressed="false"><span>EMS</span><span class="n">1</span></button>
@@ -325,7 +369,6 @@
             <img src="/assets/thumbs/24-48.svg" alt="24/48 shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>24/48</h3>
-          <p class="g-tags"><span>Fire</span><span>24-hour</span><span>3-day cycle</span></p>
           <p class="g-meta"><span>56 hrs/wk</span><span>3-day cycle</span></p>
           <a class="stretch" href="/rotations#24-48" aria-label="24/48"></a>
         </article>
@@ -334,7 +377,6 @@
             <img src="/assets/thumbs/48-96.svg" alt="48/96 shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>48/96</h3>
-          <p class="g-tags"><span>Fire</span><span>24-hour</span><span>Long breaks</span></p>
           <p class="g-meta"><span>56 hrs/wk</span><span>6-day cycle</span></p>
           <a class="stretch" href="/rotations#48-96" aria-label="48/96"></a>
         </article>
@@ -343,7 +385,6 @@
             <img src="/assets/thumbs/kelly.svg" alt="Kelly shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>Kelly</h3>
-          <p class="g-tags"><span>Fire</span><span>24-hour</span><span>9-day cycle</span></p>
           <p class="g-meta"><span>56 hrs/wk</span><span>9-day cycle</span></p>
           <a class="stretch" href="/rotations#kelly" aria-label="Kelly"></a>
         </article>
@@ -352,7 +393,6 @@
             <img src="/assets/thumbs/panama.svg" alt="Panama (2-2-3) shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>Panama (2-2-3)</h3>
-          <p class="g-tags"><span>Police</span><span>EMS</span><span>12-hour</span></p>
           <p class="g-meta"><span>42 hrs/wk</span><span>14-day cycle</span></p>
           <a class="stretch" href="/rotations#panama" aria-label="Panama (2-2-3)"></a>
         </article>
@@ -361,7 +401,6 @@
             <img src="/assets/thumbs/pitman.svg" alt="Pitman nights (2-3-2) shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>Pitman nights (2-3-2)</h3>
-          <p class="g-tags"><span>Nursing</span><span>Nights</span><span>12-hour</span></p>
           <p class="g-meta"><span>42 hrs/wk</span><span>14-day cycle</span></p>
           <a class="stretch" href="/rotations#pitman" aria-label="Pitman nights (2-3-2)"></a>
         </article>
@@ -370,7 +409,6 @@
             <img src="/assets/thumbs/dupont.svg" alt="DuPont shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>DuPont</h3>
-          <p class="g-tags"><span>Industrial</span><span>Nights</span><span>Rotating</span></p>
           <p class="g-meta"><span>42 hrs/wk</span><span>28-day cycle</span></p>
           <a class="stretch" href="/rotations#dupont" aria-label="DuPont"></a>
         </article>
@@ -379,7 +417,6 @@
             <img src="/assets/thumbs/4-on-4-off.svg" alt="4 on / 4 off shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>4 on / 4 off</h3>
-          <p class="g-tags"><span>Industrial</span><span>Transport</span><span>12-hour</span></p>
           <p class="g-meta"><span>42 hrs/wk</span><span>8-day cycle</span></p>
           <a class="stretch" href="/rotations#4-on-4-off" aria-label="4 on / 4 off"></a>
         </article>
@@ -388,7 +425,6 @@
             <img src="/assets/thumbs/5-2.svg" alt="5 on / 2 off shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>5 on / 2 off</h3>
-          <p class="g-tags"><span>Baseline</span><span>Weekdays</span><span>8-hour</span></p>
           <p class="g-meta"><span>40 hrs/wk</span><span>7-day cycle</span></p>
           <a class="stretch" href="/rotations#5-2" aria-label="5 on / 2 off"></a>
         </article>
@@ -397,7 +433,6 @@
             <img src="/assets/thumbs/live-status.svg" alt="Live duty status shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>Live duty status</h3>
-          <p class="g-tags"><span>App</span><span>Countdown</span><span>Home Screen</span></p>
           <p class="g-meta"><span>Feature</span><span>iOS · watchOS</span></p>
           <a class="stretch" href="/features#panel-dashboard" aria-label="Live duty status"></a>
         </article>
@@ -406,7 +441,6 @@
             <img src="/assets/thumbs/sharing.svg" alt="Shared schedules shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>Shared schedules</h3>
-          <p class="g-tags"><span>App</span><span>6-char code</span><span>Read-only</span></p>
           <p class="g-meta"><span>Feature</span><span>iOS · iPadOS</span></p>
           <a class="stretch" href="/features#panel-sharing" aria-label="Shared schedules"></a>
         </article>
@@ -415,7 +449,6 @@
             <img src="/assets/thumbs/widgets.svg" alt="Home Screen widgets shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>Home Screen widgets</h3>
-          <p class="g-tags"><span>App</span><span>Widgets</span><span>Lock Screen</span></p>
           <p class="g-meta"><span>Feature</span><span>3 sizes</span></p>
           <a class="stretch" href="/features#panel-watch" aria-label="Home Screen widgets"></a>
         </article>
@@ -424,7 +457,6 @@
             <img src="/assets/thumbs/watch.svg" alt="Apple Watch face shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>Apple Watch face</h3>
-          <p class="g-tags"><span>App</span><span>watchOS</span><span>Complications</span></p>
           <p class="g-meta"><span>Feature</span><span>watchOS</span></p>
           <a class="stretch" href="/features#panel-watch" aria-label="Apple Watch face"></a>
         </article>
@@ -433,7 +465,6 @@
             <img src="/assets/thumbs/privacy.svg" alt="On-device privacy shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>On-device privacy</h3>
-          <p class="g-tags"><span>App</span><span>CloudKit</span><span>No accounts</span></p>
           <p class="g-meta"><span>Feature</span><span>AES-256</span></p>
           <a class="stretch" href="/privacy" aria-label="On-device privacy"></a>
         </article>
@@ -442,7 +473,6 @@
             <img src="/assets/thumbs/vacation.svg" alt="Vacation & swaps shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>Vacation & swaps</h3>
-          <p class="g-tags"><span>App</span><span>Calendar</span><span>Overrides</span></p>
           <p class="g-meta"><span>Feature</span><span>iOS · macOS</span></p>
           <a class="stretch" href="/features#panel-calendar" aria-label="Vacation & swaps"></a>
         </article>
@@ -726,7 +756,7 @@
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-brand">
-        <a class="brand" href="/">kairos</a>
+        <a class="brand" href="/"><img class="brand-mark" src="/assets/brand-mark.png" alt="" width="128" height="128" />kairos</a>
         <p>Every real shift rotation, drawn onto a live calendar. Kairos tracks
         Kelly, Panama, DuPont, 24/48 and 48/96 on iPhone, iPad, Mac and Apple Watch —
         no account, nothing to sync but your own iCloud.</p>
@@ -735,6 +765,7 @@
           <a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855" aria-label="Kairos on the App Store"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg></a>
           <a href="mailto:team@kairosapp.dev" aria-label="Email the Kairos team"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5.5A2.5 2.5 0 0 1 4.5 3h15A2.5 2.5 0 0 1 22 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5v-13Zm2.7.5 7.3 5.6L19.3 6H4.7Zm15.3 1.9-7.4 5.7a1 1 0 0 1-1.2 0L4 7.9V18h16V7.9Z"/></svg></a>
           <a href="/support" aria-label="Support"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2a8 8 0 0 1 8 8 8 8 0 0 1-8 8 8 8 0 0 1-8-8 8 8 0 0 1 8-8Zm-1 12h2v2h-2v-2Zm1-9c-1.9 0-3.3 1.2-3.5 3h2c.1-.7.7-1.2 1.5-1.2.9 0 1.5.5 1.5 1.2 0 .6-.3.9-1.1 1.5-.9.6-1.4 1.2-1.4 2.5h2c0-.6.2-.9 1-1.5.9-.7 1.5-1.4 1.5-2.6C15.5 8.2 14 7 12 7Z"/></svg></a>
+          <a href="/feed.xml" aria-label="Kairos release notes RSS feed"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3a16 16 0 0 1 16 16h-3A13 13 0 0 0 5 6V3Zm0 6a10 10 0 0 1 10 10h-3A7 7 0 0 0 5 12V9Zm1.5 6.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"/></svg></a>
         </div>
       </div>
       <div>
@@ -762,6 +793,7 @@
           <li><a href="/faq">FAQ</a></li>
           <li><a href="/support">Support</a></li>
           <li><a href="mailto:team@kairosapp.dev">Email us</a></li>
+          <li><a href="/feed.xml">Release RSS</a></li>
           <li><a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">App Store</a></li>
         </ul>
       </div>

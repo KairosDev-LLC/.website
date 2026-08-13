@@ -942,3 +942,198 @@
     boot();
   }
 }());
+
+
+/* ==========================================================================
+   3D layer — pointer/scroll driven depth
+   No WebGL, no libraries. If any of this fails the page is still a flat,
+   readable document, which is why every effect is applied to existing
+   markup rather than generating the content it decorates.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $$(sel, root) {
+    return Array.prototype.slice.call((root || document).querySelectorAll(sel));
+  }
+
+  var reduced = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var coarse = window.matchMedia &&
+    window.matchMedia('(pointer: coarse)').matches;
+
+  function clamp(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
+
+  /* ---------- 1. Hero deck ----------
+     The deck answers to the pointer on desktop and to the device tilt or
+     scroll position elsewhere, so it is never a dead prop. */
+  function initDeck() {
+    var stage = $('#stage3d');
+    var deck = $('#deck');
+    if (!stage || !deck || reduced) return;
+
+    var baseX = 12, baseY = -16;
+    var targetX = baseX, targetY = baseY;
+    var curX = baseX, curY = baseY;
+    var raf = null;
+
+    function frame() {
+      curX += (targetX - curX) * 0.12;
+      curY += (targetY - curY) * 0.12;
+      deck.style.setProperty('--rx', curX.toFixed(2) + 'deg');
+      deck.style.setProperty('--ry', curY.toFixed(2) + 'deg');
+      if (Math.abs(targetX - curX) > 0.05 || Math.abs(targetY - curY) > 0.05) {
+        raf = window.requestAnimationFrame(frame);
+      } else {
+        raf = null;
+      }
+    }
+    function kick() { if (!raf) raf = window.requestAnimationFrame(frame); }
+
+    if (!coarse) {
+      window.addEventListener('pointermove', function (e) {
+        var r = stage.getBoundingClientRect();
+        var cx = r.left + r.width / 2;
+        var cy = r.top + r.height / 2;
+        targetY = clamp(((e.clientX - cx) / r.width) * 34, -26, 26) - 6;
+        targetX = clamp(-((e.clientY - cy) / r.height) * 22, -18, 22) + 6;
+        kick();
+      }, { passive: true });
+      stage.addEventListener('pointerleave', function () {
+        targetX = baseX; targetY = baseY; kick();
+      });
+    } else {
+      // Touch devices: let the scroll position drive the rotation instead.
+      window.addEventListener('scroll', function () {
+        var r = stage.getBoundingClientRect();
+        var p = clamp(1 - (r.top + r.height) / (window.innerHeight + r.height), 0, 1);
+        targetX = baseX - p * 14;
+        targetY = baseY + p * 22;
+        kick();
+      }, { passive: true });
+    }
+
+    // The deck is a tab panel: each tab brings its calendar to the front and
+    // pushes the rest back in Z. Auto-advance runs until the reader takes
+    // over, and stops for good after that.
+    var cards = $$('.deck-card', deck);
+    var tabs = $$('.deck-tab');
+    var front = 0;
+    var auto = null;
+
+    function layout() {
+      var n = cards.length;
+      cards.forEach(function (card, i) {
+        var depth = (i - front + n) % n;
+        card.style.setProperty('--z', (-depth * 58) + 'px');
+        card.style.setProperty('--x', (depth * 26) + 'px');
+        card.style.setProperty('--y', (depth * -16) + 'px');
+        card.style.setProperty('--s', (1 - depth * 0.045).toFixed(3));
+        card.classList.toggle('is-mid', depth === 1);
+        card.classList.toggle('is-back', depth > 1);
+        card.style.zIndex = String(20 - depth);
+      });
+      tabs.forEach(function (tab, i) {
+        var on = i === front;
+        tab.setAttribute('aria-selected', on ? 'true' : 'false');
+        tab.tabIndex = on ? 0 : -1;
+      });
+    }
+
+    function show(i) {
+      front = (i + cards.length) % cards.length;
+      layout();
+    }
+
+    function stopAuto() {
+      if (auto) { window.clearInterval(auto); auto = null; }
+    }
+
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () { stopAuto(); show(i); });
+      tab.addEventListener('keydown', function (e) {
+        var d = e.key === 'ArrowRight' ? 1 : (e.key === 'ArrowLeft' ? -1 : 0);
+        if (!d) return;
+        e.preventDefault();
+        stopAuto();
+        show(front + d);
+        tabs[front].focus();
+      });
+    });
+
+    if (cards.length > 1 && !reduced) {
+      auto = window.setInterval(function () {
+        if (!document.hidden) show(front + 1);
+      }, 4200);
+      window.addEventListener('pagehide', stopAuto);
+      stage.addEventListener('pointerenter', stopAuto);
+    }
+    layout();
+
+    kick();
+  }
+
+  /* ---------- 2. Card tilt ---------- */
+  function initTilt() {
+    if (reduced || coarse) return;
+    var cards = $$('.g-card');
+    if (!cards.length) return;
+
+    cards.forEach(function (card) {
+      card.classList.add('tilt');
+      card.addEventListener('pointermove', function (e) {
+        var r = card.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width;
+        var py = (e.clientY - r.top) / r.height;
+        card.classList.add('is-tilting');
+        card.style.setProperty('--ty', ((px - 0.5) * 11).toFixed(2) + 'deg');
+        card.style.setProperty('--tx', ((0.5 - py) * 9).toFixed(2) + 'deg');
+        card.style.setProperty('--tz', '12px');
+        card.style.setProperty('--gx', (px * 100).toFixed(1) + '%');
+        card.style.setProperty('--gy', (py * 100).toFixed(1) + '%');
+      }, { passive: true });
+      card.addEventListener('pointerleave', function () {
+        card.classList.remove('is-tilting');
+        card.style.setProperty('--ty', '0deg');
+        card.style.setProperty('--tx', '0deg');
+        card.style.setProperty('--tz', '0px');
+      });
+    });
+  }
+
+  /* ---------- 3. Tab panels enter in 3D ---------- */
+  function initTabs3d() {
+    var wraps = $$('[data-tabs]');
+    if (!wraps.length) return;
+    wraps.forEach(function (wrap) {
+      wrap.classList.add('tabs-3d');
+      if (reduced) return;
+      wrap.addEventListener('click', function (e) {
+        var btn = e.target.closest ? e.target.closest('.tab-btn') : null;
+        if (!btn) return;
+        // The existing tab script flips `hidden`; animate whatever it reveals.
+        window.setTimeout(function () {
+          $$('.tab-panel', wrap).forEach(function (panel) {
+            if (panel.hidden) return;
+            panel.classList.remove('is-entering');
+            void panel.offsetWidth;
+            panel.classList.add('is-entering');
+          });
+        }, 0);
+      });
+    });
+  }
+
+  function boot() {
+    initDeck();
+    initTilt();
+    initTabs3d();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+}());

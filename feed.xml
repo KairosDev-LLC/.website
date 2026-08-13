@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kairos — release notes</title>
+    <link>https://www.kairosapp.dev/changelog</link>
+    <atom:link href="https://www.kairosapp.dev/feed.xml" rel="self" type="application/rss+xml" />
+    <description>What shipped in Kairos, and when. Mirrored from the App Store release notes.</description>
+    <language>en-us</language>
+    <copyright>2026 KairosDev LLC</copyright>
+    <item>
+      <title>Kairos 2.1</title>
+      <link>https://www.kairosapp.dev/changelog#v2-1</link>
+      <guid isPermaLink="false">kairos-release-2.1</guid>
+      <pubDate>Tue, 28 Jul 2026 00:00:00 +0000</pubDate>
+      <description>&lt;ul&gt;<li>Fixed a scheduling bug that could show an incorrect shift day around Daylight Saving Time changes.</li><li>Added Workplace Timezone — set your job's timezone in Setup so your schedule and countdowns stay accurate no matter where you or the friends you share with are travelling.</li><li>Minor bug fixes and UI polish.</li>&lt;/ul&gt;</description>
+    </item>
+    <item>
+      <title>Kairos 2.0</title>
+      <link>https://www.kairosapp.dev/changelog#v2-0</link>
+      <guid isPermaLink="false">kairos-release-2.0</guid>
+      <pubDate>Wed, 01 Jul 2026 00:00:00 +0000</pubDate>
+      <description>&lt;ul&gt;<li>Second-generation release building on the initial App Store launch.</li><li>Continued refinement of the shared-schedule flow and calendar rendering.</li>&lt;/ul&gt;</description>
+    </item>
+    <item>
+      <title>Kairos 1.0</title>
+      <link>https://www.kairosapp.dev/changelog#v1-0</link>
+      <guid isPermaLink="false">kairos-release-1.0</guid>
+      <pubDate>Sun, 26 Jul 2026 00:00:00 +0000</pubDate>
+      <description>&lt;ul&gt;<li>Kairos arrives on the App Store for iPhone, iPad, Mac and Apple Watch.</li><li>Preset rotations including Kelly, Panama, DuPont, 24/48 and 48/96, plus custom weekly layouts.</li><li>Live duty status, shift countdown and colour-coded calendar.</li><li>Schedule sharing by 6-character access code, read-only and revocable.</li><li>Home Screen widgets in small, medium and large.</li><li>On-device storage with CloudKit sync and AES-256 encrypted recovery keys.</li>&lt;/ul&gt;</description>
+    </item>
+  </channel>
+</rss>

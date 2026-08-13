@@ -43,6 +43,7 @@ def nav():
     return """<nav class="site-nav">
   <div class="nav-inner">
     <a class="brand" href="/">
+      <img class="brand-mark" src="/assets/brand-mark.png" alt="" width="128" height="128" />
       kairos
     </a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" hidden>Menu</button>
@@ -64,7 +65,7 @@ def nav():
             </div>
           </div>
           <div>
-            <h4>By crew</h4>
+            <h4>By first responder</h4>
             <div class="nav-panel-list">
               <a href="/rotations?filter=fire#library">Fire <span class="n">3</span></a>
               <a href="/rotations?filter=ems#library">EMS <span class="n">1</span></a>
@@ -136,7 +137,7 @@ def site_foot():
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-brand">
-        <a class="brand" href="/">kairos</a>
+        <a class="brand" href="/"><img class="brand-mark" src="/assets/brand-mark.png" alt="" width="128" height="128" />kairos</a>
         <p>Every real shift rotation, drawn onto a live calendar. Kairos tracks
         Kelly, Panama, DuPont, 24/48 and 48/96 on iPhone, iPad, Mac and Apple Watch —
         no account, nothing to sync but your own iCloud.</p>
@@ -145,6 +146,7 @@ def site_foot():
           <a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855" aria-label="Kairos on the App Store"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg></a>
           <a href="mailto:team@kairosapp.dev" aria-label="Email the Kairos team"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5.5A2.5 2.5 0 0 1 4.5 3h15A2.5 2.5 0 0 1 22 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5v-13Zm2.7.5 7.3 5.6L19.3 6H4.7Zm15.3 1.9-7.4 5.7a1 1 0 0 1-1.2 0L4 7.9V18h16V7.9Z"/></svg></a>
           <a href="/support" aria-label="Support"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2a8 8 0 0 1 8 8 8 8 0 0 1-8 8 8 8 0 0 1-8-8 8 8 0 0 1 8-8Zm-1 12h2v2h-2v-2Zm1-9c-1.9 0-3.3 1.2-3.5 3h2c.1-.7.7-1.2 1.5-1.2.9 0 1.5.5 1.5 1.2 0 .6-.3.9-1.1 1.5-.9.6-1.4 1.2-1.4 2.5h2c0-.6.2-.9 1-1.5.9-.7 1.5-1.4 1.5-2.6C15.5 8.2 14 7 12 7Z"/></svg></a>
+          <a href="/feed.xml" aria-label="Kairos release notes RSS feed"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3a16 16 0 0 1 16 16h-3A13 13 0 0 0 5 6V3Zm0 6a10 10 0 0 1 10 10h-3A7 7 0 0 0 5 12V9Zm1.5 6.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"/></svg></a>
         </div>
       </div>
       <div>
@@ -172,6 +174,7 @@ def site_foot():
           <li><a href="/faq">FAQ</a></li>
           <li><a href="/support">Support</a></li>
           <li><a href="mailto:team@kairosapp.dev">Email us</a></li>
+          <li><a href="/feed.xml">Release RSS</a></li>
           <li><a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">App Store</a></li>
         </ul>
       </div>
@@ -256,6 +259,7 @@ def page(slug, title, description, h1, sub, body,
 <meta name="theme-color" content="#0b0b0f" />
 <meta name="color-scheme" content="dark" />
 <link rel="manifest" href="/manifest.json" />
+<link rel="alternate" type="application/rss+xml" title="Kairos release notes" href="/feed.xml" />
 <meta name="apple-mobile-web-app-title" content="Kairos" />
 <meta name="apple-itunes-app" content="app-id=6792157855" />
 
@@ -508,15 +512,17 @@ ROTATIONS = [
 
 ROT_SLUGS = ["24-48", "48-96", "kelly", "panama", "pitman", "dupont", "4-on-4-off", "5-2"]
 
-ROT_TAGS = {
-    "24-48": ["Fire", "24-hour", "3-day cycle"],
-    "48-96": ["Fire", "24-hour", "Long breaks"],
-    "kelly": ["Fire", "24-hour", "9-day cycle"],
-    "panama": ["Police", "EMS", "12-hour"],
-    "pitman": ["Nursing", "Nights", "12-hour"],
-    "dupont": ["Industrial", "Nights", "Rotating"],
-    "4-on-4-off": ["Industrial", "Transport", "12-hour"],
-    "5-2": ["Baseline", "Weekdays", "8-hour"],
+# First responder tags: which services actually work each pattern. These
+# drive the filter chips, not the card face.
+ROT_RESPONDERS = {
+    "24-48": ["Fire"],
+    "48-96": ["Fire"],
+    "kelly": ["Fire"],
+    "panama": ["Police", "EMS"],
+    "pitman": ["Nursing"],
+    "dupont": ["Industrial"],
+    "4-on-4-off": ["Industrial", "Transport"],
+    "5-2": ["Baseline"],
 }
 
 ROT_CATS = {
@@ -539,13 +545,11 @@ def rotations_page():
     # cards first, then the long-form write-up for each pattern underneath.
     gcards = []
     for i, ((name, cycle, hrs, short, long), slug) in enumerate(zip(ROTATIONS, ROT_SLUGS)):
-        tags = "".join(f"<span>{t}</span>" for t in ROT_TAGS[slug])
         gcards.append(f'''        <article class="g-card reveal" data-cats="{ROT_CATS[slug]}" style="--reveal-i:{i % 4}">
           <div class="thumb">
             <img src="/assets/thumbs/{slug}.svg" alt="{name} drawn onto a month of the Kairos calendar" width="1200" height="854" loading="lazy" />
           </div>
           <h3>{name}</h3>
-          <p class="g-tags">{tags}</p>
           <p class="g-meta"><span>{hrs}</span><span>{cycle}</span></p>
           <a class="stretch" href="#{slug}" aria-label="{name}"></a>
         </article>''')
@@ -571,7 +575,7 @@ def rotations_page():
 
     body = f'''  <section class="section-ink" id="library">
     <div class="wrap">
-      <div class="chip-row" id="chip-row" role="group" aria-label="Filter rotations">
+      <div class="chip-row" id="chip-row" role="group" aria-label="Filter rotations by first responder service and shift pattern">
         {gallery_chips}
       </div>
 
@@ -1130,7 +1134,7 @@ def changelog_page():
         elif tag == "launch":
             pill = ' <span class="pill pill-quiet">Launch</span>'
         lis = "\n".join(f"            <li>{n}</li>" for n in notes)
-        items.append(f'''        <div class="tl-item{'' if i == 0 else ' is-old'}">
+        items.append(f'''        <div class="tl-item{'' if i == 0 else ' is-old'}" id="v{ver.replace('.', '-')}">
           <p class="tl-meta">{when}</p>
           <h3>Version {ver}{pill}</h3>
           <ul>
@@ -1192,6 +1196,56 @@ def changelog_page():
     )
 
 
+
+# ===========================================================================
+# RSS
+# ===========================================================================
+
+
+def feed_xml():
+    """Build /feed.xml from the same RELEASES list the changelog renders.
+
+    A feed is the one social channel that costs nothing to run, cannot be
+    taken away by a platform, and does not need an account to follow.
+    """
+    import email.utils
+    import datetime
+
+    items = []
+    for ver, when, _tag, notes in RELEASES:
+        try:
+            dt = datetime.datetime.strptime(when, "%d %B %Y")
+        except ValueError:
+            try:
+                dt = datetime.datetime.strptime(when, "%B %Y")
+            except ValueError:
+                dt = datetime.datetime(2026, 7, 26)
+        pub = email.utils.format_datetime(dt.replace(tzinfo=datetime.timezone.utc))
+        body = "".join(f"<li>{n}</li>" for n in notes)
+        link = f"https://www.kairosapp.dev/changelog#v{ver.replace('.', '-')}"
+        items.append(f"""    <item>
+      <title>Kairos {ver}</title>
+      <link>{link}</link>
+      <guid isPermaLink="false">kairos-release-{ver}</guid>
+      <pubDate>{pub}</pubDate>
+      <description>&lt;ul&gt;{body}&lt;/ul&gt;</description>
+    </item>""")
+
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kairos — release notes</title>
+    <link>https://www.kairosapp.dev/changelog</link>
+    <atom:link href="https://www.kairosapp.dev/feed.xml" rel="self" type="application/rss+xml" />
+    <description>What shipped in Kairos, and when. Mirrored from the App Store release notes.</description>
+    <language>en-us</language>
+    <copyright>2026 KairosDev LLC</copyright>
+{chr(10).join(items)}
+  </channel>
+</rss>
+"""
+
+
 LIGHTBOX = '''
 <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="App screenshot">
   <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close">&times;</button>
@@ -1210,4 +1264,8 @@ if __name__ == "__main__":
     write("faq", faq_page())
     write("support", support_page())
     write("changelog", changelog_page())
+
+    with open(os.path.join(ROOT, "feed.xml"), "w") as f:
+        f.write(feed_xml())
+    print("wrote feed.xml")
     print("\ndone")

@@ -2049,3 +2049,229 @@ kbd {
    are not shown; every card stays visible instead. */
 html:not(.js) #chip-row,
 html:not(.js) #pager { display: none; }
+
+/* ---------- Brand mark ----------
+   The App Store icon is a fine engraving that turns to mush under 32px, so
+   the nav uses a high-contrast silhouette tile derived from it. */
+.brand-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px var(--line-on-ink);
+}
+.site-foot .foot-brand .brand-mark { width: 30px; height: 30px; border-radius: 8px; }
+
+
+/* ==========================================================================
+   3D layer
+   Real depth, no WebGL and no dependencies: CSS 3D transforms driven by
+   pointer, scroll and a little JS. Every effect is decoration layered on
+   top of flat, readable markup, and all of it collapses under
+   prefers-reduced-motion or when JavaScript never runs.
+   ========================================================================== */
+
+/* ---------- Hero stage ---------- */
+.stage3d {
+  position: relative;
+  perspective: 1400px;
+  perspective-origin: 50% 45%;
+  padding: 26px 0 6px;
+}
+.deck {
+  position: relative;
+  width: min(760px, 92vw);
+  margin: 0 auto;
+  aspect-ratio: 1200 / 854;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, 12deg)) rotateY(var(--ry, -16deg)) rotateZ(var(--rz, 0deg));
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.js .deck { transition: transform 0.18s ease-out; }
+.deck-card {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  background: var(--card);
+  border: 1px solid var(--line-on-ink);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+  transform: translate3d(var(--x, 0px), var(--y, 0px), var(--z, 0px)) scale(var(--s, 1));
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+}
+.deck-card img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.deck-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.14), transparent 42%);
+  opacity: var(--glare, 0.5);
+  pointer-events: none;
+}
+.deck-card.is-back { opacity: 0.55; filter: saturate(0.7); }
+.deck-card.is-mid { opacity: 0.8; }
+/* A flame plane behind the deck gives the scene a floor and a horizon. */
+.stage3d::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  width: min(760px, 92vw);
+  height: 210px;
+  transform: translateX(-50%) rotateX(74deg);
+  background: radial-gradient(ellipse at center, var(--flame-dim), transparent 68%);
+  filter: blur(22px);
+  pointer-events: none;
+}
+.deck-badges {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+.deck-badge {
+  position: absolute;
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: var(--chip);
+  border: 1px solid var(--line-on-ink);
+  color: var(--paper);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+  left: var(--bx);
+  top: var(--by);
+  transform: translate3d(0, 0, var(--bz));
+}
+.deck-badge .dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--flame);
+  margin-right: 7px;
+  vertical-align: middle;
+}
+.deck-badge.is-night .dot { background: var(--duty-night); }
+.deck-badge.is-off .dot { background: var(--duty-vacation); }
+
+.stage-hint {
+  margin: 34px 0 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+.stage-hint kbd { margin: 0 2px; }
+
+/* ---------- Card tilt ---------- */
+.tilt {
+  transform: perspective(900px)
+             rotateX(var(--tx, 0deg))
+             rotateY(var(--ty, 0deg))
+             translateZ(var(--tz, 0px));
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tilt.is-tilting { transition: transform 0.08s linear; }
+.g-card.tilt .thumb { transform: translateZ(26px); transition: transform 0.4s ease; }
+.g-card.tilt h3, .g-card.tilt .g-meta { transform: translateZ(14px); }
+.g-card.tilt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: radial-gradient(320px circle at var(--gx, 50%) var(--gy, 0%),
+              rgba(255, 255, 255, 0.10), transparent 68%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.g-card.tilt:hover::after { opacity: 1; }
+
+/* ---------- 3D tab switcher ---------- */
+[data-tabs].tabs-3d { perspective: 1600px; }
+.tabs-3d .tab-panel {
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+}
+.js .tabs-3d .tab-panel.is-entering {
+  animation: panel-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes panel-in {
+  from { opacity: 0; transform: rotateY(-14deg) translateZ(-90px); }
+  to   { opacity: 1; transform: none; }
+}
+.tabs-3d .tab-btn { transform-style: preserve-3d; transition: transform 0.25s ease; }
+.tabs-3d .tab-btn[aria-selected="true"] { transform: translateZ(18px); }
+
+/* ---------- Depth on section cards ---------- */
+.depth-row { perspective: 1200px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .deck, .deck-card, .tilt, .tabs-3d .tab-btn { transform: none !important; transition: none !important; }
+  .js .tabs-3d .tab-panel.is-entering { animation: none; }
+  .stage3d::before { display: none; }
+}
+@media (max-width: 700px) {
+  .deck-badge { font-size: 11px; padding: 6px 10px; }
+  .stage-hint { display: none; }
+}
+
+/* ---------- Deck tab bar ---------- */
+.deck-tabs {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 30px;
+  position: relative;
+  z-index: 2;
+}
+.deck-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-on-ink);
+  background: var(--chip);
+  color: var(--paper);
+  font-family: var(--ui);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.deck-tab:hover { border-color: var(--flame); transform: translateY(-2px); }
+.deck-tab .dt-name { font-size: 14px; font-weight: 600; }
+.deck-tab .dt-meta { font-size: 11px; color: var(--muted); }
+.deck-tab[aria-selected="true"] {
+  background: var(--flame);
+  border-color: var(--flame);
+  color: #fff;
+}
+.deck-tab[aria-selected="true"] .dt-meta { color: rgba(255, 255, 255, 0.85); }
+.stage3d { padding-bottom: 18px; }
+.deck { width: min(680px, 86vw); }
+.stage3d::before { width: min(680px, 86vw); }
+@media (max-width: 640px) {
+  .deck-tab { padding: 7px 12px; }
+  .deck-tab .dt-meta { display: none; }
+}
+
+.badge-a { --bx: -9%; --by: 11%; --bz: 130px; }
+.badge-b { --bx: 74%; --by: 30%; --bz: 160px; }
+.badge-c { --bx: 4%; --by: 73%; --bz: 104px; }
+
+@media (max-width: 700px) {
+  /* Badges float outside the deck on desktop; on a phone that pushes them
+     off-canvas, so they tuck inside the frame instead. */
+  .deck-badge { --bz: 60px; }
+  .badge-a { --bx: 3%; --by: 5%; }
+  .badge-b { --bx: 46%; --by: 24%; }
+  .badge-c { --bx: 4%; --by: 74%; }
+  .stage3d { padding-top: 10px; }
+  .deck { width: min(560px, 90vw); }
+  .stage3d::before { width: min(560px, 90vw); }
+}
