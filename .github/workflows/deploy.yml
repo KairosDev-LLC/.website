@@ -1,0 +1,85 @@
+name: deploy
+
+# Production deploys should be a consequence of a green build on main, not a
+# button someone remembers to press. This workflow only runs when the Vercel
+# credentials exist as repository secrets, so a fork or an unconfigured clone
+# is skipped rather than failed.
+#
+# Required repository secrets (Settings > Secrets and variables > Actions):
+#   VERCEL_TOKEN       personal or team token from vercel.com/account/tokens
+#   VERCEL_ORG_ID      from .vercel/project.json after `vercel link`
+#   VERCEL_PROJECT_ID  from the same file
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.check.outputs.configured }}
+    steps:
+      - id: check
+        env:
+          TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -n "$TOKEN" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::VERCEL_TOKEN is not set, skipping deploy."
+          fi
+
+  deploy:
+    needs: guard
+    if: needs.guard.outputs.configured == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      # A broken site must never reach production, so the same invariants CI
+      # enforces on every branch are re-checked here immediately before the
+      # deploy, against the exact tree being shipped.
+      - name: Durability checks
+        run: python3 tools/check_site.py
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          npx --yes vercel@latest pull --yes --environment=production \
+            --token="${{ secrets.VERCEL_TOKEN }}"
+          npx --yes vercel@latest deploy --prod --yes \
+            --token="${{ secrets.VERCEL_TOKEN }}" | tee deploy.txt
+          echo "url=$(tail -n1 deploy.txt)" >> "$GITHUB_OUTPUT"
+        id: vercel
+
+      # Deploying is not the same as being live: confirm the production URL
+      # actually serves this build before calling the job green.
+      - name: Verify production is serving this build
+        run: |
+          set -e
+          for i in $(seq 1 20); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' https://www.kairosapp.dev/feed.xml || true)
+            csp=$(curl -sI https://www.kairosapp.dev/ | grep -ci '^content-security-policy' || true)
+            echo "attempt $i: feed.xml=$code csp_header=$csp"
+            if [ "$code" = "200" ] && [ "$csp" != "0" ]; then
+              echo "Production is serving the current build."
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "::error::Production did not pick up this build within 5 minutes."
+          exit 1

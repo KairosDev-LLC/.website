@@ -80,3 +80,62 @@ Verify by loading `python3 tools/serve.py` with JavaScript disabled.
 * **Broken link discovered in production** — reproduce locally with
   `tools/serve.py`, add a check to `check_site.py` if the class of bug was not
   already covered, then fix.
+
+
+## Security posture
+
+The site has no backend, no accounts and no third-party origins, so the whole
+attack surface is what the browser is told it may do. That is set in
+`vercel.json` and enforced by `tools/check_site.py`.
+
+| Header | Value | Why |
+|---|---|---|
+| `Content-Security-Policy` | `default-src 'self'`, scripts by hash, everything else denied | Injected markup has no origin to run from or exfiltrate to |
+| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` | No downgrade window after the first visit |
+| `X-Content-Type-Options` | `nosniff` | A mistyped asset cannot be reinterpreted as script |
+| `X-Frame-Options` / `frame-ancestors` | `DENY` / `'none'` | No clickjacking frame |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | Paths are not leaked to outbound links |
+| `Permissions-Policy` | sensors, camera, mic, payment, USB, XR all `()` | The site needs none of them |
+| `Cross-Origin-Opener-Policy` / `-Resource-Policy` | `same-origin` | No cross-origin window or resource sharing |
+
+### The CSP contract
+
+`script-src` is `'self'` plus a **sha256 hash per inline script** — there is no
+`'unsafe-inline'` and no `'unsafe-eval'`. Two inline scripts exist and both are
+hashed: the `js` class flag and the pre-paint theme boot.
+
+This means **adding or editing an inline script changes its hash**. If the
+policy is not updated to match, the browser silently drops the script. That
+failure is caught two ways before it can ship:
+
+1. `tools/check_site.py` re-hashes every inline script on every page and fails
+   if one is not in the policy.
+2. `tools/serve.py` serves the real `vercel.json` headers locally, so the
+   preview behaves exactly like production.
+
+To change an inline script: edit it, run `python3 tools/check_site.py`, take
+the hash it prints as missing, and put it in the `script-src` list.
+
+`style-src` keeps `'unsafe-inline'` because the markup uses `style` attributes
+for per-element values the stylesheet cannot know (reveal delays, deck badge
+depths). Inline *styles* cannot execute script, so this is a much smaller
+concession than the script equivalent.
+
+### What is not deployed
+
+`.vercelignore` keeps `tools/`, `docs/`, `.github/` and loose `*.py` out of the
+deployment. The CDN serves the static site and nothing else.
+
+## Deploying
+
+`main` is production. `.github/workflows/deploy.yml` deploys on every push to
+`main`, but **only when `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`
+exist as repository secrets** — without them the job is skipped, not failed.
+
+The workflow re-runs the durability checks against the exact tree being
+shipped, deploys, and then polls the production URL until it actually serves
+the new build. A deploy that does not go live fails the job rather than
+reporting success.
+
+If the Vercel Git integration is connected to the repository instead, that
+path deploys on push as well and this workflow is redundant but harmless.
