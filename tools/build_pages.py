@@ -401,10 +401,13 @@ FEATURE_TABS = [
 
 def features_page():
     tabs = "\n        ".join(
-        f'<button class="tab-btn" role="tab" id="tab-{k}" aria-controls="panel-{k}" '
-        f'aria-selected="{"true" if i == 0 else "false"}" tabindex="{0 if i == 0 else -1}">{label}</button>'
+        f'<button class="tab-btn has-thumb" role="tab" id="tab-{k}" aria-controls="panel-{k}" '
+        f'aria-selected="{"true" if i == 0 else "false"}" tabindex="{0 if i == 0 else -1}">'
+        f'<img class="tab-thumb" src="/assets/tabs/tab-{k}.webp" alt="" width="264" height="185" loading="lazy" />'
+        f'<span class="tab-label">{label}</span></button>'
         for i, (k, label, _) in enumerate(FEATURE_TABS)
     )
+
     panels = "\n".join(
         f'      <div class="tab-panel" role="tabpanel" id="panel-{k}" aria-labelledby="tab-{k}"'
         f' data-tab-label="{label}"'

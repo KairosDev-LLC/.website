@@ -236,6 +236,7 @@
   }
 
   var FLOOR_Y = -1.42;
+  var sceneScale = 1;   // shrinks the whole scene to fit narrow viewports
   var PHONE_ASPECT = 720 / 1558;
   var phone = upload(slab(1.18, 1.18 / PHONE_ASPECT, 0.085));
 
@@ -283,9 +284,9 @@
   }
 
   var SCREENS = [
-    { src: '/assets/shots/app-1-working.webp', label: 'On duty' },
-    { src: '/assets/shots/app-2-calendar.webp', label: 'Calendar' },
-    { src: '/assets/shots/app-3-vacation.webp', label: 'Vacation' }
+    { src: '/assets/shots/app-1-working.webp', label: 'On duty', pattern: 'D..' },
+    { src: '/assets/shots/app-2-calendar.webp', label: 'Calendar', pattern: 'DD..DDD..DD...' },
+    { src: '/assets/shots/app-3-vacation.webp', label: 'Vacation', pattern: 'D.D.D....' }
   ];
   SCREENS.forEach(function (s) { s.tex = makeTexture(s.src); });
 
@@ -329,14 +330,54 @@
     return w / h;
   }
 
+
+  // A ring of day tiles orbiting the devices: the selected rotation repeated
+  // around a full turn, on-duty tiles lit, off-duty tiles dark. It is the
+  // rotation itself, rendered as a rotation.
+  var RING_PATTERN = SCREENS[0].pattern;
+  var ringTiles = [];
+  var ring = upload(slab(0.34, 0.23, 0.05));
+  var RING_R = 2.78;
+
+  function buildRing() {
+    var out = '';
+    while (out.length < 28) { out += RING_PATTERN; }
+    ringTiles = out.split('');
+  }
+  buildRing();
+
+  function drawRing(flipY) {
+    var n = ringTiles.length;
+    var spin = reduced ? 0 : (performance.now() - t0) * 0.00007;
+    gl.uniform1f(loc.uIsScreen, 0.0);
+    bind(ring);
+    for (var i = 0; i < n; i++) {
+      var a = (i / n) * Math.PI * 2 + spin;
+      var on = ringTiles[i];
+      var wave = Math.sin(a * 3 + spin * 6) * 0.05;
+      compose(model, Math.sin(a) * RING_R * sceneScale, (-0.90 + wave) * sceneScale,
+              Math.cos(a) * RING_R * sceneScale, a, 0.30,
+              sceneScale, sceneScale, sceneScale);
+      gl.uniformMatrix4fv(loc.uModel, false, model);
+      gl.uniformMatrix3fv(loc.uNormalMat, false, inverseTranspose3(model));
+      gl.uniform1f(loc.uAlpha, flipY < 0 ? 0.10 : 0.95);
+      if (on === 'D') { gl.uniform3f(loc.uTint, 1.0, 0.42, 0.16); gl.uniform1f(loc.uGlow, 1.4); }
+      else if (on === 'N') { gl.uniform3f(loc.uTint, 0.45, 0.58, 1.0); gl.uniform1f(loc.uGlow, 1.1); }
+      else { gl.uniform3f(loc.uTint, 0.15, 0.15, 0.18); gl.uniform1f(loc.uGlow, 0.25); }
+      gl.drawElements(gl.TRIANGLES, ring.count, gl.UNSIGNED_SHORT, 0);
+    }
+  }
+
   function drawScene(flipY) {
     gl.uniform1f(loc.uFlipY, flipY);
-    gl.uniform1f(loc.uFloorY, FLOOR_Y);
+    gl.uniform1f(loc.uFloorY, FLOOR_Y * sceneScale);
+    drawRing(flipY);
     bind(phone);
     for (var i = 0; i < SCREENS.length; i++) {
       var p = placed[i];
       var bob = reduced ? 0 : Math.sin((performance.now() - t0) * 0.0006 + i * 1.7) * 0.045;
-      compose(model, p.x, p.y + bob, p.z, p.ry, 0.02, p.s, p.s, p.s);
+      compose(model, p.x * sceneScale, (p.y + bob) * sceneScale, p.z * sceneScale,
+              p.ry, 0.02, p.s * sceneScale, p.s * sceneScale, p.s * sceneScale);
       gl.uniformMatrix4fv(loc.uModel, false, model);
       gl.uniformMatrix3fv(loc.uNormalMat, false, inverseTranspose3(model));
       gl.uniform1f(loc.uAlpha, flipY < 0 ? 0.16 : 1.0);
@@ -367,12 +408,16 @@
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.enable(gl.CULL_FACE);
 
+    // Narrow viewports get the whole scene scaled down rather than cropped.
+    // The scene's bounding box is ~6.4 x 3.6 units; fit it to whatever the
+    // viewport gives us instead of cropping the ring off the edges.
+    sceneScale = Math.min(1, Math.max(0.55, 0.62 * aspect));
     perspective(proj, 42 * Math.PI / 180, aspect, 0.1, 60);
-    var r = 5.15;
+    var r = 5.15 + dolly * 2.4;
     eye[0] = Math.sin(orbit.y) * Math.cos(orbit.x) * r;
     eye[1] = Math.sin(orbit.x) * r + 0.25;
     eye[2] = Math.cos(orbit.y) * Math.cos(orbit.x) * r;
-    lookAt(view, eye, [0, 0, 0], [0, 1, 0]);
+    lookAt(view, eye, [0, -dolly * 0.55, 0], [0, 1, 0]);
     gl.uniformMatrix4fv(loc.uProj, false, proj);
     gl.uniformMatrix4fv(loc.uView, false, view);
     gl.uniform3f(loc.uEye, eye[0], eye[1], eye[2]);
@@ -461,10 +506,23 @@
     }, 60);
   }
 
+  // Scroll dolly: the scene tilts and pulls back as the hero scrolls away, so
+  // the transition into the gallery below reads as camera movement.
+  var dolly = 0;
+  if (!reduced) {
+    window.addEventListener('scroll', function () {
+      var r = stage.getBoundingClientRect();
+      var p = Math.max(0, Math.min(1, -r.top / Math.max(1, r.height)));
+      if (Math.abs(p - dolly) > 0.002) { dolly = p; wake(); }
+    }, { passive: true });
+  }
+
   // Tabs pick the front device.
   var tabs = Array.prototype.slice.call(document.querySelectorAll('[data-gl-tab]'));
   function select(i) {
     front = (i + SCREENS.length) % SCREENS.length;
+    RING_PATTERN = SCREENS[front].pattern;
+    buildRing();
     tabs.forEach(function (tab, k) {
       var on = k === front;
       tab.setAttribute('aria-selected', on ? 'true' : 'false');

@@ -217,6 +217,73 @@ def build_cards() -> None:
         print(f"  assets/thumbs/{slug}.webp  {W}x{H}  {os.path.getsize(out) / 1024:.0f} KB")
 
 
+
+# Every tab across the site gets a preview image; these are the sources.
+TAB_THUMBS = [
+    # slug,           source,                       kind
+    ("tab-dashboard", "app-1-working.webp", "shot", 0.42),
+    ("tab-calendar", "app-2-calendar.webp", "shot", 0.40),
+    ("tab-vacation", "app-3-vacation.webp", "shot", 0.42),
+    ("tab-sharing", "sharing.svg", "svg", 0.5),
+    ("tab-privacy", "privacy.svg", "svg", 0.5),
+    ("tab-watch", "watch.svg", "svg", 0.5),
+    ("tab-widgets", "widgets.svg", "svg", 0.5),
+    ("tab-rotations", "24-48.svg", "svg", 0.5),
+    ("tab-24-48", "24-48.svg", "svg", 0.5),
+    ("tab-panama", "panama.svg", "svg", 0.5),
+    ("tab-kelly", "kelly.svg", "svg", 0.5),
+    ("tab-dupont", "dupont.svg", "svg", 0.5),
+]
+
+TAB_W, TAB_H = 264, 185
+
+
+def render_svg(path: str, width: int) -> "Image.Image":
+    """Rasterise one of the generated SVG thumbnails with Inkscape."""
+    from PIL import Image
+
+    with tempfile.TemporaryDirectory() as tmp:
+        png = os.path.join(tmp, "out.png")
+        subprocess.run(
+            ["inkscape", path, "--export-type=png", f"--export-filename={png}",
+             f"--export-width={width}"],
+            check=True, capture_output=True,
+        )
+        return Image.open(png).convert("RGB")
+
+
+def build_tab_thumbs() -> None:
+    from PIL import Image, ImageDraw
+
+    out_dir = os.path.join(ROOT, "assets", "tabs")
+    os.makedirs(out_dir, exist_ok=True)
+    thumbs_dir = os.path.join(ROOT, "assets", "thumbs")
+
+    for slug, source, kind, focus in TAB_THUMBS:
+        if kind == "shot":
+            src = Image.open(os.path.join(SHOTS, source)).convert("RGB")
+        else:
+            src = render_svg(os.path.join(thumbs_dir, source), TAB_W * 2)
+
+        # Cover-crop to the tab ratio around the interesting band of the image.
+        scale = max(TAB_W / src.width, TAB_H / src.height)
+        w, h = max(TAB_W, round(src.width * scale)), max(TAB_H, round(src.height * scale))
+        img = src.resize((w, h), Image.LANCZOS)
+        top = min(max(0, round(h * focus - TAB_H / 2)), h - TAB_H)
+        left = (w - TAB_W) // 2
+        img = img.crop((left, top, left + TAB_W, top + TAB_H))
+
+        # Rounded corners, matte-filled so the WebP stays opaque.
+        mask = Image.new("L", (TAB_W, TAB_H), 0)
+        ImageDraw.Draw(mask).rounded_rectangle([0, 0, TAB_W - 1, TAB_H - 1], radius=14, fill=255)
+        matted = Image.new("RGB", (TAB_W, TAB_H), (20, 20, 23))
+        matted.paste(img, (0, 0), mask)
+
+        path = os.path.join(out_dir, f"{slug}.webp")
+        matted.save(path, "WEBP", quality=80, method=6)
+        print(f"  assets/tabs/{slug}.webp  {TAB_W}x{TAB_H}  {os.path.getsize(path) / 1024:.0f} KB")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--brand-repo", help="local checkout of the org .github repo")
@@ -230,6 +297,7 @@ def main() -> None:
         pull_brand(args.brand_repo)
         build_mark()
     build_cards()
+    build_tab_thumbs()
     print("done")
 
 

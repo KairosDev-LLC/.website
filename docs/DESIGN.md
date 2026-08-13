@@ -96,6 +96,14 @@ mirrored about a floor plane below the devices.
   idle, and drifts slowly when untouched.
 - **Tabs** (`[data-gl-tab]`) move a screen to the front of the arc; the other
   devices ease back in Z. Arrow keys work.
+- **Duty ring** — a ring of shift tiles orbits the devices, carrying the
+  selected rotation repeated around a full turn: flame tiles are on duty,
+  indigo are nights, dark are off. Switching tabs rebuilds it from that
+  screen's real pattern, so the rotation is rendered as a rotation.
+- **Scroll dolly** — the camera pulls back and tilts as the hero scrolls
+  away, so the handover to the gallery reads as camera movement.
+- **Fit** — the scene's ~6.4 x 3.6 unit bounding box is scaled to the
+  viewport rather than cropped, so phones and ring stay whole on a phone.
 - **Reflection** is a second pass with `depthMask(false)` and front-face
   culling, mirrored about `FLOOR_Y` so it never occludes the real geometry.
 - **Cost control**: DPR capped at 2, rendering paused by IntersectionObserver
@@ -161,3 +169,33 @@ the site cannot drift from the product:
 Re-run it when the listing or the branding changes:
 
     python3 tools/gen_app_assets.py
+
+
+## Tabs carry pictures
+
+Every tab on the site shows what it opens: the WebGL hero tabs, the fallback
+deck tabs and the six feature tabs on /features. `tools/gen_app_assets.py`
+builds them into `assets/tabs/` at 264x185 — App Store screens cover-cropped
+around the interesting band, generated SVG thumbnails rasterised through
+Inkscape, both matted onto the card tone with rounded corners so a WebP with
+no alpha still reads as a rounded tile.
+
+## The motion vocabulary
+
+Animation follows the app's own language — duty colour, cycle rhythm, depth —
+rather than generic easing:
+
+- Cards **turn toward the reader** on reveal (`rotateX` + Z translation)
+  instead of sliding up flat, and their thumbnail settles from a slight
+  overscale as the card lands.
+- Nav panels swing down on a **hinge** (`rotateX` from a top origin).
+- Chips, pager buttons and picture tabs have a **press depth** on `:active`
+  rather than a colour flash.
+- Duty dots **pulse** on a 2.6s cadence, staggered per status.
+- Fallback deck badges **float at their own depth**, keeping parallax alive
+  where WebGL is unavailable.
+- Feature panels **turn in on the Y axis** when a picture tab is chosen.
+- The scroll progress bar **sweeps** between duty and night colour.
+
+All of it is `.js`-gated and every animation is disabled under
+`prefers-reduced-motion: reduce`.

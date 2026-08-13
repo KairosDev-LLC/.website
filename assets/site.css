@@ -2320,3 +2320,164 @@ html:not(.js) #pager { display: none; }
 .gl-stage.gl-live + .gl-tabs { display: flex; }
 .gl-stage.gl-live ~ .stage-hint { display: block; }
 .gl-stage:not(.gl-live) ~ .stage-hint { display: none; }
+
+/* ---------- Tab previews ----------
+   Every tab carries a picture of what it opens: the App Store screen for the
+   app tabs, the generated calendar for the rotation tabs. */
+.deck-tab, .tab-btn.has-thumb {
+  position: relative;
+  overflow: hidden;
+}
+.tab-thumb {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 264 / 185;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid var(--line-on-ink);
+  transform: translateZ(0) scale(1);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), filter 0.3s ease;
+  filter: saturate(0.85) brightness(0.9);
+}
+.deck-tab:hover .tab-thumb,
+.tab-btn:hover .tab-thumb { transform: scale(1.06); filter: none; }
+.deck-tab[aria-selected="true"] .tab-thumb,
+.tab-btn[aria-selected="true"] .tab-thumb { filter: none; border-color: rgba(255, 255, 255, 0.35); }
+
+.deck-tabs { gap: 12px; align-items: stretch; }
+.deck-tab {
+  width: 168px;
+  padding: 10px 10px 12px;
+  align-items: stretch;
+  text-align: left;
+}
+.deck-tab .dt-name { font-size: 13px; }
+.deck-tab .dt-meta { font-size: 10.5px; }
+
+/* The features tab strip becomes a row of picture tabs. */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 0 !important;
+  padding-bottom: 4px;
+}
+.tab-btn.has-thumb {
+  width: 172px;
+  padding: 10px 10px 12px;
+  border: 1px solid var(--line-on-ink);
+  border-radius: var(--radius-sm);
+  background: var(--chip);
+  color: var(--paper);
+  text-align: left;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.25s ease;
+}
+.tab-btn.has-thumb:hover { border-color: var(--flame); }
+.tab-btn.has-thumb[aria-selected="true"] {
+  background: var(--flame);
+  border-color: var(--flame);
+  color: #fff;
+}
+.tab-btn.has-thumb::after { display: none; }
+.tab-label { display: block; }
+
+@media (max-width: 640px) {
+  .deck-tab, .tab-btn.has-thumb { width: 132px; }
+  .deck-tab .dt-meta { display: none; }
+}
+
+/* ==========================================================================
+   Motion — 3D, and in the app's language
+   Duty colour, cycle rhythm and depth. Every animation below is decoration:
+   it runs only with JavaScript and only when motion is welcome.
+   ========================================================================== */
+
+/* Cards arrive as if turning toward the reader, not sliding up flat. */
+.js .reveal {
+  transform: perspective(1000px) rotateX(9deg) translate3d(0, 26px, -60px);
+  transform-origin: 50% 100%;
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.js .reveal.revealed { transform: perspective(1000px) rotateX(0) translate3d(0, 0, 0); }
+
+/* Nav panels swing down on a hinge. */
+.nav-panel {
+  transform-origin: 50% -10px;
+  transform: translateX(-50%) perspective(1200px) rotateX(-14deg) translateY(-6px);
+}
+.nav-menu[data-open="true"] .nav-panel {
+  transform: translateX(-50%) perspective(1200px) rotateX(0) translateY(0);
+}
+
+/* Chips and buttons have a press depth rather than a colour flash. */
+.chip, .pager button, .deck-tab, .tab-btn.has-thumb, .nav-cta, .btn {
+  transform: perspective(600px) translateZ(0);
+}
+.chip:active, .pager button:active, .nav-cta:active, .btn:active {
+  transform: perspective(600px) translateZ(-8px) scale(0.985);
+}
+.deck-tab:active, .tab-btn.has-thumb:active { transform: perspective(600px) translateZ(-10px); }
+
+/* The duty dot pulses on the app's own cadence. */
+@keyframes duty-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 90, 31, 0.55); }
+  70% { box-shadow: 0 0 0 9px rgba(255, 90, 31, 0); }
+}
+.js .deck-badge .dot { animation: duty-pulse 2.6s ease-out infinite; }
+.js .deck-badge.is-night .dot { animation-delay: 0.9s; }
+.js .deck-badge.is-off .dot { animation-delay: 1.7s; }
+
+/* Badges float at their own depth, so the fallback deck still has parallax. */
+@keyframes badge-float {
+  0%, 100% { transform: translate3d(0, 0, var(--bz)); }
+  50% { transform: translate3d(0, -7px, calc(var(--bz) + 18px)); }
+}
+.js .deck-badge { animation: badge-float 6s ease-in-out infinite; }
+.js .badge-b { animation-duration: 7.4s; animation-delay: -2s; }
+.js .badge-c { animation-duration: 8.2s; animation-delay: -4s; }
+
+/* The section eyebrow ticks in like a shift starting. */
+@keyframes eyebrow-in {
+  from { opacity: 0; letter-spacing: 0.34em; }
+  to { opacity: 1; letter-spacing: 0.16em; }
+}
+.js .reveal .eyebrow, .js .eyebrow.reveal { animation: eyebrow-in 0.8s ease both; }
+
+/* Gallery thumbnails settle back after the card lands. */
+@keyframes thumb-settle {
+  from { transform: scale(1.08) translateZ(0); }
+  to { transform: scale(1) translateZ(0); }
+}
+.js .g-card.revealed .thumb img { animation: thumb-settle 1s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Feature panels turn in on the Y axis when a picture tab is chosen. */
+@keyframes panel-turn {
+  from { opacity: 0; transform: perspective(1400px) rotateY(-12deg) translateZ(-70px); }
+  to { opacity: 1; transform: none; }
+}
+.js .tabs-3d .tab-panel.is-entering { animation: panel-turn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* The scroll progress bar carries the duty colour across the top. */
+#scroll-progress {
+  background: linear-gradient(90deg, var(--flame), var(--duty-night), var(--flame));
+  background-size: 200% 100%;
+}
+.js #scroll-progress { animation: duty-sweep 6s linear infinite; }
+@keyframes duty-sweep {
+  from { background-position: 0 0; }
+  to { background-position: 200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal, .js .reveal.revealed { transform: none !important; }
+  .js .deck-badge, .js .deck-badge .dot, .js #scroll-progress,
+  .js .g-card.revealed .thumb img, .js .tabs-3d .tab-panel.is-entering,
+  .js .reveal .eyebrow { animation: none !important; }
+}
