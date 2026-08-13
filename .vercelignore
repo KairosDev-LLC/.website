@@ -1,0 +1,7 @@
+# Nothing here belongs on the CDN. The deployment is the static site only:
+# authoring tools, design notes and CI config stay in the repository.
+tools/
+docs/
+.github/
+*.py
+.gitignore

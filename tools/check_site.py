@@ -16,6 +16,8 @@ Exit code 0 = all checks passed, 1 = at least one FAIL.
 from __future__ import annotations
 
 import argparse
+import base64
+import hashlib
 import json
 import os
 import re
@@ -60,6 +62,9 @@ class Doc(HTMLParser):
         self.has_lang = False
         self.stack: list[str] = []
         self.unclosed: list[str] = []
+        self.inline_scripts: list[tuple[str, str]] = []   # (type, body)
+        self._script_type: str | None = None
+        self._script_body = ""
 
     VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input",
             "link", "meta", "param", "source", "track", "wbr"}
@@ -86,12 +91,19 @@ class Doc(HTMLParser):
                 self.rel[r] = a.get("href", "")
         if tag == "title":
             self.title_depth = 1
+        if tag == "script" and not a.get("src"):
+            self._script_type = (a.get("type") or "").lower()
+            self._script_body = ""
         if tag not in self.VOID:
             self.stack.append(tag)
 
     def handle_endtag(self, tag):
         if tag == "title":
             self.title_depth = 0
+        if tag == "script" and self._script_type is not None:
+            self.inline_scripts.append((self._script_type, self._script_body))
+            self._script_type = None
+            self._script_body = ""
         if tag in self.VOID:
             return
         if tag in self.stack:
@@ -103,6 +115,8 @@ class Doc(HTMLParser):
     def handle_data(self, data):
         if self.title_depth:
             self.title += data
+        if self._script_type is not None:
+            self._script_body += data
 
 
 def load(path: str) -> Doc:
@@ -132,6 +146,7 @@ def main() -> int:
             on_disk.add(os.path.relpath(os.path.join(base, f), ".").replace(os.sep, "/"))
 
     docs = {p: load(p) for p in html_files}
+    raw_pages = {p: open(p, encoding="utf-8").read() for p in html_files}
     ids_by_page = {p: set(d.ids) for p, d in docs.items()}
 
     def resolve(url: str, from_page: str) -> str | None:
@@ -336,6 +351,94 @@ def main() -> int:
             fail("scroll-reveal hides content without a .js guard: content is invisible when JS fails")
         else:
             ok("scroll-reveal is gated on .js, so content stays visible without JavaScript")
+
+
+    # 10b. security headers -------------------------------------------------
+    # A Content-Security-Policy is only as good as its hashes: add an inline
+    # script without updating the policy and the browser silently drops it.
+    # This check keeps the policy and the markup honest about each other.
+    if "vercel.json" in on_disk:
+        try:
+            deploy = json.load(open("vercel.json", encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            fail(f"vercel.json is not valid JSON: {exc}")
+            deploy = {}
+
+        global_headers: dict[str, str] = {}
+        for rule in deploy.get("headers", []):
+            if rule.get("source") == "/(.*)":
+                for header in rule.get("headers", []):
+                    global_headers[header["key"]] = header["value"]
+
+        required = [
+            "Content-Security-Policy",
+            "Strict-Transport-Security",
+            "X-Content-Type-Options",
+            "X-Frame-Options",
+            "Referrer-Policy",
+            "Permissions-Policy",
+            "Cross-Origin-Opener-Policy",
+        ]
+        missing = [h for h in required if h not in global_headers]
+        if missing:
+            fail(f"vercel.json: no site-wide {', '.join(missing)} header(s)")
+        else:
+            ok(f"all {len(required)} security headers are served site-wide")
+
+        hsts = global_headers.get("Strict-Transport-Security", "")
+        max_age = re.search(r"max-age=(\d+)", hsts)
+        if not max_age or int(max_age.group(1)) < 15552000:
+            fail(f"Strict-Transport-Security max-age is too short to be useful: {hsts!r}")
+
+        csp = global_headers.get("Content-Security-Policy", "")
+        if csp:
+            directives = {}
+            for part in csp.split(";"):
+                part = part.strip()
+                if part:
+                    bits = part.split()
+                    directives[bits[0]] = bits[1:]
+
+            for directive, banned in (("script-src", "'unsafe-inline'"),
+                                      ("script-src", "'unsafe-eval'"),
+                                      ("object-src", "'self'")):
+                if banned in directives.get(directive, []):
+                    fail(f"CSP {directive} allows {banned}, which defeats the policy")
+
+            for directive in ("default-src", "frame-ancestors", "base-uri", "form-action"):
+                if directive not in directives:
+                    fail(f"CSP has no {directive} directive")
+
+            allowed = set(directives.get("script-src", []))
+            uncovered = []
+            for page, doc in docs.items():
+                for kind, body in doc.inline_scripts:
+                    if kind not in ("", "text/javascript", "module"):
+                        continue          # data blocks are not executed
+                    digest = "'sha256-" + base64.b64encode(
+                        hashlib.sha256(body.encode("utf-8")).digest()).decode() + "'"
+                    if digest not in allowed:
+                        uncovered.append(f"{page}: {digest}")
+            if uncovered:
+                fail("inline script(s) not allowed by the CSP, so they will be blocked:\n      "
+                     + "\n      ".join(sorted(set(uncovered))))
+            else:
+                ok("every inline script is covered by a CSP hash")
+
+    # 10c. markup that CSP cannot save you from ----------------------------
+    risky = []
+    for p, raw in raw_pages.items():
+        for attr in re.findall(r"\son(?:click|load|error|mouseover|focus)\s*=", raw):
+            risky.append(f"{p}: inline event handler {attr.strip()}")
+        if "javascript:" in raw:
+            risky.append(f"{p}: javascript: URL")
+        for tag in re.findall(r'<a\b[^>]*target="_blank"[^>]*>', raw):
+            if "noopener" not in tag:
+                risky.append(f"{p}: target=_blank without rel=noopener")
+    if risky:
+        fail("unsafe markup:\n      " + "\n      ".join(sorted(set(risky))))
+    else:
+        ok("no inline handlers, javascript: URLs or unprotected target=_blank")
 
     # 11. external links ---------------------------------------------------
     if args.external:

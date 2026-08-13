@@ -16,13 +16,53 @@ from __future__ import annotations
 import argparse
 import functools
 import http.server
+import json
 import os
+import re
 import socketserver
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def load_header_rules():
+    """Read vercel.json so previews carry the production security headers.
+
+    A Content-Security-Policy that is only exercised in production is a
+    policy nobody has tested. Serving it locally means a blocked script or
+    style shows up here first, not after a deploy.
+    """
+    path = os.path.join(ROOT, "vercel.json")
+    if not os.path.isfile(path):
+        return []
+    try:
+        cfg = json.load(open(path, encoding="utf-8"))
+    except json.JSONDecodeError:
+        return []
+    rules = []
+    for rule in cfg.get("headers", []):
+        source = rule.get("source", "")
+        # Vercel source patterns are path globs with regex groups; the subset
+        # this site uses maps cleanly onto a regex anchored at both ends.
+        pattern = "^" + source.replace(".", r"\.").replace(r"(\.*)", "(.*)") + "$"
+        try:
+            rules.append((re.compile(pattern), rule.get("headers", [])))
+        except re.error:
+            continue
+    return rules
+
+
+HEADER_RULES = load_header_rules()
+
+
 class CleanURLHandler(http.server.SimpleHTTPRequestHandler):
+    def end_headers(self):
+        path = self.path.split("?", 1)[0].split("#", 1)[0]
+        for pattern, headers in HEADER_RULES:
+            if pattern.match(path):
+                for header in headers:
+                    self.send_header(header["key"], header["value"])
+        super().end_headers()
+
     def translate_path(self, path: str) -> str:
         clean = path.split("?", 1)[0].split("#", 1)[0]
         candidate = os.path.join(ROOT, clean.lstrip("/"))
