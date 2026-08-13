@@ -678,3 +678,267 @@
     boot();
   }
 })();
+
+
+/* ==========================================================================
+   Gallery layer — theme switch, nav menus, ⌘K search, chip filter + pager
+   Everything here is progressive enhancement. Without JavaScript the page
+   still shows every card, every nav destination and a working footer.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $$(sel, root) {
+    return Array.prototype.slice.call((root || document).querySelectorAll(sel));
+  }
+
+  /* ---------- 1. Light / dark switch ---------- */
+  function initTheme() {
+    var btn = $('#theme-toggle');
+    if (!btn) return;
+    function apply(mode) {
+      document.documentElement.setAttribute('data-theme', mode);
+      btn.setAttribute('aria-label', mode === 'light'
+        ? 'Switch to dark mode' : 'Switch to light mode');
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', mode === 'light' ? '#ffffff' : '#0a0a0b');
+    }
+    btn.addEventListener('click', function () {
+      var next = document.documentElement.getAttribute('data-theme') === 'light'
+        ? 'dark' : 'light';
+      apply(next);
+      try { localStorage.setItem('kairos-theme', next); } catch (e) {}
+    });
+    apply(document.documentElement.getAttribute('data-theme') || 'dark');
+  }
+
+  /* ---------- 2. Nav dropdown panels ---------- */
+  function initNavMenus() {
+    var menus = $$('.nav-menu');
+    if (!menus.length) return;
+
+    function close(menu) {
+      menu.setAttribute('data-open', 'false');
+      var b = menu.querySelector('button');
+      if (b) b.setAttribute('aria-expanded', 'false');
+    }
+    function open(menu) {
+      menus.forEach(close);
+      menu.setAttribute('data-open', 'true');
+      var b = menu.querySelector('button');
+      if (b) b.setAttribute('aria-expanded', 'true');
+    }
+
+    menus.forEach(function (menu) {
+      var btn = menu.querySelector('button');
+      if (!btn) return;
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (menu.getAttribute('data-open') === 'true') { close(menu); } else { open(menu); }
+      });
+      menu.addEventListener('mouseenter', function () { open(menu); });
+      menu.addEventListener('mouseleave', function () { close(menu); });
+    });
+
+    document.addEventListener('click', function () { menus.forEach(close); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') menus.forEach(close);
+    });
+  }
+
+  /* ---------- 3. Command-K search ---------- */
+  var SEARCH_INDEX = [
+    { t: '24/48', u: '/rotations#24-48', d: 'One 24-hour shift, then 48 hours off. 56 hrs/wk.' },
+    { t: '48/96', u: '/rotations#48-96', d: 'Two 24-hour shifts, then four days off. 56 hrs/wk.' },
+    { t: 'Kelly', u: '/rotations#kelly', d: 'Three 24-hour shifts on alternating days, then four off.' },
+    { t: 'Panama (2-2-3)', u: '/rotations#panama', d: 'Two on, two off, three on, 12-hour shifts. 42 hrs/wk.' },
+    { t: 'Pitman nights (2-3-2)', u: '/rotations#pitman', d: 'The 2-3-2 worked on nights. 42 hrs/wk.' },
+    { t: 'DuPont', u: '/rotations#dupont', d: 'Rotating nights and days with a seven-day break.' },
+    { t: '4 on / 4 off', u: '/rotations#4-on-4-off', d: 'Four 12-hour shifts, then four days off.' },
+    { t: '5 on / 2 off', u: '/rotations#5-2', d: 'The fixed weekday baseline. 40 hrs/wk.' },
+    { t: 'Rotation simulator', u: '/rotations#simulator', d: 'Draw any rotation onto a live calendar in your browser.' },
+    { t: 'Features', u: '/features', d: 'Live duty status, sharing, widgets, watch app and calendar.' },
+    { t: 'Shared schedules', u: '/features#sharing', d: 'Share your rotation with a 6-character access code.' },
+    { t: 'Home Screen widgets', u: '/features#widgets', d: 'Small, medium and large widgets on iOS.' },
+    { t: 'Pricing', u: '/pricing', d: 'Free to download. Kairos Pro from $4.99 a month.' },
+    { t: 'Changelog', u: '/changelog', d: 'What shipped, and when.' },
+    { t: 'FAQ', u: '/faq', d: 'Answers about rotations, sync, sharing and billing.' },
+    { t: 'Support', u: '/support', d: 'Get help from the people who build Kairos.' },
+    { t: 'Privacy policy', u: '/privacy', d: 'On-device storage, CloudKit sync, no accounts.' }
+  ];
+
+  function initSearch() {
+    var overlay = $('#search-overlay');
+    var input = $('#search-input');
+    var list = $('#search-results');
+    var opener = $('#search-open');
+    if (!overlay || !input || !list) return;
+    var active = 0;
+
+    function render(q) {
+      var terms = q.toLowerCase().trim();
+      var hits = SEARCH_INDEX.filter(function (item) {
+        if (!terms) return true;
+        return (item.t + ' ' + item.d).toLowerCase().indexOf(terms) !== -1;
+      }).slice(0, 8);
+      active = 0;
+      if (!hits.length) {
+        list.innerHTML = '<li class="search-empty">No matches. Try “Kelly”, “widgets” or “sharing”.</li>';
+        return;
+      }
+      list.innerHTML = hits.map(function (h, i) {
+        return '<li class="' + (i === 0 ? 'is-active' : '') + '"><a href="' + h.u + '">' +
+          h.t + '<small>' + h.d + '</small></a></li>';
+      }).join('');
+    }
+
+    function show() {
+      overlay.hidden = false;
+      render('');
+      input.value = '';
+      input.focus();
+    }
+    function hide() { overlay.hidden = true; }
+
+    if (opener) opener.addEventListener('click', show);
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) hide(); });
+    input.addEventListener('input', function () { render(input.value); });
+
+    document.addEventListener('keydown', function (e) {
+      var key = (e.key || '').toLowerCase();
+      if (key === 'k' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); show(); return; }
+      if (overlay.hidden) return;
+      var items = $$('li', list).filter(function (li) { return li.querySelector('a'); });
+      if (e.key === 'Escape') { hide(); }
+      else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (!items.length) return;
+        active = (active + (e.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length;
+        items.forEach(function (li, i) { li.classList.toggle('is-active', i === active); });
+      } else if (e.key === 'Enter') {
+        var current = items[active];
+        if (current) { window.location.href = current.querySelector('a').getAttribute('href'); }
+      }
+    });
+  }
+
+  /* ---------- 4. Chip filter + pagination ---------- */
+  function initGallery() {
+    var grid = $('#gallery-grid');
+    var row = $('#chip-row');
+    var pager = $('#pager');
+    var empty = $('#gallery-empty');
+    if (!grid || !row) return;
+
+    var cards = $$('.g-card', grid);
+    var perPage = parseInt(grid.getAttribute('data-per-page'), 10) || 8;
+    var filter = 'all';
+    var page = 1;
+
+    function matches(card) {
+      if (filter === 'all') return true;
+      return (' ' + card.getAttribute('data-cats') + ' ').indexOf(' ' + filter + ' ') !== -1;
+    }
+
+    function draw() {
+      var visible = cards.filter(matches);
+      var pages = Math.max(1, Math.ceil(visible.length / perPage));
+      if (page > pages) page = pages;
+      var start = (page - 1) * perPage;
+
+      cards.forEach(function (card) { card.hidden = true; });
+      visible.slice(start, start + perPage).forEach(function (card) {
+        card.hidden = false;
+        card.classList.add('revealed');
+      });
+      if (empty) empty.hidden = visible.length !== 0;
+
+      if (pager) {
+        $$('button[data-page]', pager).forEach(function (b) {
+          var n = parseInt(b.getAttribute('data-page'), 10);
+          b.hidden = n > pages;
+          b.setAttribute('aria-current', n === page ? 'true' : 'false');
+        });
+        var first = $('button[data-nav="first"]', pager);
+        var prev = $('button[data-nav="prev"]', pager);
+        var next = $('button[data-nav="next"]', pager);
+        var last = $('button[data-nav="last"]', pager);
+        if (first) first.disabled = page === 1;
+        if (prev) prev.disabled = page === 1;
+        if (next) next.disabled = page === pages;
+        if (last) last.disabled = page === pages;
+        pager.hidden = pages < 2;
+      }
+    }
+
+    row.addEventListener('click', function (e) {
+      var chip = e.target.closest ? e.target.closest('.chip') : null;
+      if (!chip) return;
+      filter = chip.getAttribute('data-filter');
+      page = 1;
+      $$('.chip', row).forEach(function (c) {
+        c.setAttribute('aria-pressed', c === chip ? 'true' : 'false');
+      });
+      draw();
+    });
+
+    if (pager) {
+      pager.addEventListener('click', function (e) {
+        var btn = e.target.closest ? e.target.closest('button') : null;
+        if (!btn || btn.disabled) return;
+        var visible = cards.filter(matches);
+        var pages = Math.max(1, Math.ceil(visible.length / perPage));
+        var nav = btn.getAttribute('data-nav');
+        if (nav === 'first') page = 1;
+        else if (nav === 'prev') page = Math.max(1, page - 1);
+        else if (nav === 'next') page = Math.min(pages, page + 1);
+        else if (nav === 'last') page = pages;
+        else if (btn.getAttribute('data-page')) page = parseInt(btn.getAttribute('data-page'), 10);
+        draw();
+        var head = document.querySelector('.chip-row');
+        if (head) head.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+
+    // Deep link: /?filter=fire selects a chip on load, so shared links land
+    // on the same view the sender was looking at.
+    var q = (window.location.search.match(/[?&]filter=([a-z0-9-]+)/i) || [])[1];
+    if (q) {
+      var target = $('.chip[data-filter="' + q + '"]', row);
+      if (target) {
+        filter = q;
+        $$('.chip', row).forEach(function (c) {
+          c.setAttribute('aria-pressed', c === target ? 'true' : 'false');
+        });
+      }
+    }
+    draw();
+  }
+
+  /* ---------- 5. "See more" filters ---------- */
+  function initChipMore() {
+    var btn = $('#chip-more');
+    var row = $('#chip-row');
+    if (!btn || !row) return;
+    btn.addEventListener('click', function () {
+      var open = row.classList.toggle('is-expanded');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.textContent = open ? 'See less' : 'See more';
+    });
+  }
+
+  function boot() {
+    initTheme();
+    initNavMenus();
+    initSearch();
+    initGallery();
+    initChipMore();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+}());

@@ -21,6 +21,9 @@
 <meta property="og:locale" content="en_US" />
 <meta property="og:url" content="https://www.kairosapp.dev/rotations" />
 <meta property="og:image" content="https://www.kairosapp.dev/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Kairos — taking the guesswork out of shift work" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Shift rotations explained — Kairos" />
 <meta name="twitter:description" content="Kelly, Panama, DuPont, 24/48, 48/96, Pitman, 4 on 4 off and 5 on 2 off — cycle lengths, average weekly hours, and an interactive simulator that shows any of them on a live calendar." />
@@ -39,6 +42,7 @@
 </script>
 
 <script>document.documentElement.classList.add('js');</script>
+<script>(function(){try{var m=localStorage.getItem('kairos-theme');if(!m&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)m='light';document.documentElement.setAttribute('data-theme',m||'dark');}catch(e){}}());</script>
 <link rel="stylesheet" href="/assets/site.css" />
 </head>
 <body>
@@ -49,17 +53,80 @@
 <nav class="site-nav">
   <div class="nav-inner">
     <a class="brand" href="/">
-      <img src="/icon.png" alt="" width="300" height="300" />
-      Kairos
+      kairos
     </a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" hidden>Menu</button>
     <div class="nav-links" id="nav-links">
-      <a class="navlink" href="/features">Features</a>
-      <a class="navlink" href="/rotations">Rotations</a>
-      <a class="navlink" href="/pricing">Pricing</a>
+      <div class="nav-menu" data-open="false">
+        <button type="button" aria-expanded="false" aria-controls="menu-rotations">Rotations</button>
+        <div class="nav-panel" id="menu-rotations">
+          <div>
+            <h4>Patterns</h4>
+            <div class="nav-panel-list">
+            <a href="/rotations#24-48">24/48</a>
+            <a href="/rotations#48-96">48/96</a>
+            <a href="/rotations#kelly">Kelly</a>
+            <a href="/rotations#panama">Panama (2-2-3)</a>
+            <a href="/rotations#pitman">Pitman nights</a>
+            <a href="/rotations#dupont">DuPont</a>
+            <a href="/rotations#4-on-4-off">4 on / 4 off</a>
+            <a href="/rotations#5-2">5 on / 2 off</a>
+            </div>
+          </div>
+          <div>
+            <h4>By crew</h4>
+            <div class="nav-panel-list">
+              <a href="/rotations?crew=fire">Fire <span class="n">4</span></a>
+              <a href="/rotations?crew=ems">EMS <span class="n">3</span></a>
+              <a href="/rotations?crew=police">Police <span class="n">3</span></a>
+              <a href="/rotations?crew=nursing">Nursing <span class="n">3</span></a>
+              <a href="/rotations?crew=industrial">Industrial <span class="n">2</span></a>
+              <a href="/rotations?crew=transport">Transport <span class="n">2</span></a>
+            </div>
+            <h4 style="margin-top:16px">Tools</h4>
+            <div class="nav-panel-list">
+              <a href="/rotations#simulator">Rotation simulator</a>
+              <a href="/rotations#compare">Hours compared</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-menu" data-open="false">
+        <button type="button" aria-expanded="false" aria-controls="menu-app">The app</button>
+        <div class="nav-panel" id="menu-app">
+          <div>
+            <h4>Product</h4>
+            <div class="nav-panel-list">
+              <a href="/features">Features</a>
+              <a href="/features#panel-calendar">Calendar</a>
+              <a href="/features#panel-sharing">Sharing</a>
+              <a href="/features#panel-watch">Widgets</a>
+              <a href="/features#panel-privacy">Privacy</a>
+            </div>
+          </div>
+          <div>
+            <h4>Get it</h4>
+            <div class="nav-panel-list">
+              <a href="/pricing">Pricing</a>
+              <a href="/changelog">Changelog</a>
+              <a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">App Store</a>
+            </div>
+          </div>
+        </div>
+      </div>
       <a class="navlink" href="/faq">FAQ</a>
       <a class="navlink" href="/support">Support</a>
-      <a class="navlink" href="/changelog">Changelog</a>
+    </div>
+    <div class="nav-right">
+      <button class="nav-search" id="search-open" type="button" aria-label="Search the site">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span>Search</span>
+        <span class="sk"><kbd>Ctrl</kbd> <kbd>K</kbd></span>
+      </button>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch between light and dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.5 1.5m11.2 11.2 1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5"/></svg>
+      </button>
       <a class="nav-cta" href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">Get the app</a>
     </div>
   </div>
@@ -75,7 +142,102 @@
     </div>
   </header>
 
-  <section class="section-ink">
+  <section class="section-ink" id="library">
+    <div class="wrap">
+      <div class="chip-row" id="chip-row" role="group" aria-label="Filter rotations">
+        <button class="chip" type="button" data-filter="all" aria-pressed="true"><span>All</span><span class="n">8</span></button>
+        <button class="chip" type="button" data-filter="fire" aria-pressed="false"><span>Fire</span><span class="n">3</span></button>
+        <button class="chip" type="button" data-filter="police" aria-pressed="false"><span>Police</span><span class="n">1</span></button>
+        <button class="chip" type="button" data-filter="ems" aria-pressed="false"><span>EMS</span><span class="n">1</span></button>
+        <button class="chip" type="button" data-filter="nursing" aria-pressed="false"><span>Nursing</span><span class="n">1</span></button>
+        <button class="chip" type="button" data-filter="industrial" aria-pressed="false"><span>Industrial</span><span class="n">2</span></button>
+        <button class="chip" type="button" data-filter="transport" aria-pressed="false"><span>Transport</span><span class="n">1</span></button>
+        <button class="chip" type="button" data-filter="12h" aria-pressed="false"><span>12-hour</span><span class="n">4</span></button>
+        <button class="chip" type="button" data-filter="24h" aria-pressed="false"><span>24-hour</span><span class="n">3</span></button>
+        <button class="chip" type="button" data-filter="nights" aria-pressed="false"><span>Nights</span><span class="n">2</span></button>
+        <button class="chip" type="button" data-filter="weekend" aria-pressed="false"><span>Every other weekend</span><span class="n">2</span></button>
+        <button class="chip" type="button" data-filter="long" aria-pressed="false"><span>Long breaks</span><span class="n">3</span></button>
+      </div>
+
+      <div class="gallery-grid" id="gallery-grid" data-per-page="8">
+        <article class="g-card reveal" data-cats="fire 24h short" style="--reveal-i:0">
+          <div class="thumb">
+            <img src="/assets/thumbs/24-48.svg" alt="24/48 drawn onto a month of the Kairos calendar" width="1200" height="854" loading="lazy" />
+          </div>
+          <h3>24/48</h3>
+          <p class="g-tags"><span>Fire</span><span>24-hour</span><span>3-day cycle</span></p>
+          <p class="g-meta"><span>56 hrs/wk</span><span>3-day cycle</span></p>
+          <a class="stretch" href="#24-48" aria-label="24/48"></a>
+        </article>
+        <article class="g-card reveal" data-cats="fire 24h long" style="--reveal-i:1">
+          <div class="thumb">
+            <img src="/assets/thumbs/48-96.svg" alt="48/96 drawn onto a month of the Kairos calendar" width="1200" height="854" loading="lazy" />
+          </div>
+          <h3>48/96</h3>
+          <p class="g-tags"><span>Fire</span><span>24-hour</span><span>Long breaks</span></p>
+          <p class="g-meta"><span>56 hrs/wk</span><span>6-day cycle</span></p>
+          <a class="stretch" href="#48-96" aria-label="48/96"></a>
+        </article>
+        <article class="g-card reveal" data-cats="fire 24h long" style="--reveal-i:2">
+          <div class="thumb">
+            <img src="/assets/thumbs/kelly.svg" alt="Kelly drawn onto a month of the Kairos calendar" width="1200" height="854" loading="lazy" />
+          </div>
+          <h3>Kelly</h3>
+          <p class="g-tags"><span>Fire</span><span>24-hour</span><span>9-day cycle</span></p>
+          <p class="g-meta"><span>56 hrs/wk</span><span>9-day cycle</span></p>
+          <a class="stretch" href="#kelly" aria-label="Kelly"></a>
+        </article>
+        <article class="g-card reveal" data-cats="police ems 12h weekend" style="--reveal-i:3">
+          <div class="thumb">
+            <img src="/assets/thumbs/panama.svg" alt="Panama (2-2-3) drawn onto a month of the Kairos calendar" width="1200" height="854" loading="lazy" />
+          </div>
+          <h3>Panama (2-2-3)</h3>
+          <p class="g-tags"><span>Police</span><span>EMS</span><span>12-hour</span></p>
+          <p class="g-meta"><span>42 hrs/wk</span><span>14-day cycle</span></p>
+          <a class="stretch" href="#panama" aria-label="Panama (2-2-3)"></a>
+        </article>
+        <article class="g-card reveal" data-cats="nursing nights 12h weekend" style="--reveal-i:0">
+          <div class="thumb">
+            <img src="/assets/thumbs/pitman.svg" alt="Pitman nights (2-3-2) drawn onto a month of the Kairos calendar" width="1200" height="854" loading="lazy" />
+          </div>
+          <h3>Pitman nights (2-3-2)</h3>
+          <p class="g-tags"><span>Nursing</span><span>Nights</span><span>12-hour</span></p>
+          <p class="g-meta"><span>42 hrs/wk</span><span>14-day cycle</span></p>
+          <a class="stretch" href="#pitman" aria-label="Pitman nights (2-3-2)"></a>
+        </article>
+        <article class="g-card reveal" data-cats="industrial nights 12h long" style="--reveal-i:1">
+          <div class="thumb">
+            <img src="/assets/thumbs/dupont.svg" alt="DuPont drawn onto a month of the Kairos calendar" width="1200" height="854" loading="lazy" />
+          </div>
+          <h3>DuPont</h3>
+          <p class="g-tags"><span>Industrial</span><span>Nights</span><span>Rotating</span></p>
+          <p class="g-meta"><span>42 hrs/wk</span><span>28-day cycle</span></p>
+          <a class="stretch" href="#dupont" aria-label="DuPont"></a>
+        </article>
+        <article class="g-card reveal" data-cats="industrial transport 12h" style="--reveal-i:2">
+          <div class="thumb">
+            <img src="/assets/thumbs/4-on-4-off.svg" alt="4 on / 4 off drawn onto a month of the Kairos calendar" width="1200" height="854" loading="lazy" />
+          </div>
+          <h3>4 on / 4 off</h3>
+          <p class="g-tags"><span>Industrial</span><span>Transport</span><span>12-hour</span></p>
+          <p class="g-meta"><span>42 hrs/wk</span><span>8-day cycle</span></p>
+          <a class="stretch" href="#4-on-4-off" aria-label="4 on / 4 off"></a>
+        </article>
+        <article class="g-card reveal" data-cats="baseline short" style="--reveal-i:3">
+          <div class="thumb">
+            <img src="/assets/thumbs/5-2.svg" alt="5 on / 2 off drawn onto a month of the Kairos calendar" width="1200" height="854" loading="lazy" />
+          </div>
+          <h3>5 on / 2 off</h3>
+          <p class="g-tags"><span>Baseline</span><span>Weekdays</span><span>8-hour</span></p>
+          <p class="g-meta"><span>40 hrs/wk</span><span>7-day cycle</span></p>
+          <a class="stretch" href="#5-2" aria-label="5 on / 2 off"></a>
+        </article>
+        <p class="g-empty" id="gallery-empty" hidden>No rotation matches that filter.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-ink" id="simulator">
     <div class="wrap">
       <p class="eyebrow">Interactive</p>
       <h2 class="section-title">Rotation simulator</h2>
@@ -165,7 +327,7 @@
     </div>
   </section>
 
-  <section class="section-paper">
+  <section class="section-paper" id="compare">
     <div class="wrap">
       <p class="eyebrow">Side by side</p>
       <h2 class="section-title">All eight at a glance</h2>
@@ -195,49 +357,49 @@
     <div class="wrap">
       <h2 class="section-title">In detail</h2>
       <div class="grid-2">
-        <div class="card glass-light reveal" style="--reveal-i:0">
+        <div class="card glass-light reveal" id="24-48" style="--reveal-i:0">
           <span class="fnum">3-day cycle · 56 hrs/wk</span>
           <h3>24/48</h3>
           <p><strong>One 24-hour shift, then 48 hours off.</strong></p>
           <p>The default single-platoon fire schedule. You work one full day, then get two. Simple to hold in your head, but the working day walks through the week, so it never lands on the same weekday twice in a row.</p>
         </div>
-        <div class="card glass-light reveal" style="--reveal-i:1">
+        <div class="card glass-light reveal" id="48-96" style="--reveal-i:1">
           <span class="fnum">6-day cycle · 56 hrs/wk</span>
           <h3>48/96</h3>
           <p><strong>Two 24-hour shifts, then four days off.</strong></p>
           <p>The same 56-hour average as 24/48, rearranged so all of your time off arrives in one four-day block. Popular with crews who commute a long way or want real recovery time.</p>
         </div>
-        <div class="card glass-light reveal" style="--reveal-i:2">
+        <div class="card glass-light reveal" id="kelly" style="--reveal-i:2">
           <span class="fnum">9-day cycle · 56 hrs/wk</span>
           <h3>Kelly</h3>
           <p><strong>Three 24-hour shifts on alternating days, then four off.</strong></p>
           <p>Named after Chicago's Mayor Kelly. Work, off, work, off, work, then four consecutive days off. It splits the difference between the daily churn of 24/48 and the long blocks of 48/96.</p>
         </div>
-        <div class="card glass-light reveal" style="--reveal-i:3">
+        <div class="card glass-light reveal" id="panama" style="--reveal-i:3">
           <span class="fnum">14-day cycle · 42 hrs/wk</span>
           <h3>Panama (2-2-3)</h3>
           <p><strong>Two on, two off, three on — 12-hour shifts.</strong></p>
           <p>The classic slow-rotating 2-2-3. Over a fortnight it gives you every other weekend off in full, which is why dispatch centres and law enforcement lean on it.</p>
         </div>
-        <div class="card glass-light reveal" style="--reveal-i:4">
+        <div class="card glass-light reveal" id="pitman" style="--reveal-i:4">
           <span class="fnum">14-day cycle · 42 hrs/wk</span>
           <h3>Pitman nights (2-3-2)</h3>
           <p><strong>The same 2-3-2 structure, worked on nights.</strong></p>
           <p>Structurally identical to the Panama but on the night side of the roster. Same every-other-weekend rhythm, same 42-hour average, very different sleep schedule.</p>
         </div>
-        <div class="card glass-light reveal" style="--reveal-i:5">
+        <div class="card glass-light reveal" id="dupont" style="--reveal-i:5">
           <span class="fnum">28-day cycle · 42 hrs/wk</span>
           <h3>DuPont</h3>
           <p><strong>Rotating nights and days with a seven-day break.</strong></p>
           <p>Four nights, three off, three days, one off, three nights, three off, four days, then seven consecutive days off. The long break at the end is the whole point, and the reason people tolerate the rotation.</p>
         </div>
-        <div class="card glass-light reveal" style="--reveal-i:6">
+        <div class="card glass-light reveal" id="4-on-4-off" style="--reveal-i:6">
           <span class="fnum">8-day cycle · 42 hrs/wk</span>
           <h3>4 on / 4 off</h3>
           <p><strong>Four 12-hour shifts, then four days off.</strong></p>
           <p>Very common on industrial, plant and transportation crews. An even split with a cycle that fits neatly into an eight-day rhythm, though it drifts against the calendar week.</p>
         </div>
-        <div class="card glass-light reveal" style="--reveal-i:7">
+        <div class="card glass-light reveal" id="5-2" style="--reveal-i:7">
           <span class="fnum">7-day cycle · 40 hrs/wk</span>
           <h3>5 on / 2 off</h3>
           <p><strong>The fixed weekday week.</strong></p>
@@ -312,6 +474,68 @@
 </footer>
 
 <button id="to-top" type="button" aria-label="Back to top">&#8593;</button>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="/">kairos</a>
+        <p>Every real shift rotation, drawn onto a live calendar. Kairos tracks
+        Kelly, Panama, DuPont, 24/48 and 48/96 on iPhone, iPad, Mac and Apple Watch —
+        no account, nothing to sync but your own iCloud.</p>
+        <p>Ask us anything: <a class="mail" href="mailto:team@kairosapp.dev">team@kairosapp.dev</a></p>
+        <div class="foot-social">
+          <a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855" aria-label="Kairos on the App Store"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg></a>
+          <a href="mailto:team@kairosapp.dev" aria-label="Email the Kairos team"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5.5A2.5 2.5 0 0 1 4.5 3h15A2.5 2.5 0 0 1 22 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5v-13Zm2.7.5 7.3 5.6L19.3 6H4.7Zm15.3 1.9-7.4 5.7a1 1 0 0 1-1.2 0L4 7.9V18h16V7.9Z"/></svg></a>
+          <a href="/support" aria-label="Support"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2a8 8 0 0 1 8 8 8 8 0 0 1-8 8 8 8 0 0 1-8-8 8 8 0 0 1 8-8Zm-1 12h2v2h-2v-2Zm1-9c-1.9 0-3.3 1.2-3.5 3h2c.1-.7.7-1.2 1.5-1.2.9 0 1.5.5 1.5 1.2 0 .6-.3.9-1.1 1.5-.9.6-1.4 1.2-1.4 2.5h2c0-.6.2-.9 1-1.5.9-.7 1.5-1.4 1.5-2.6C15.5 8.2 14 7 12 7Z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h4>Rotations</h4>
+        <ul>
+          <li><a href="/rotations#24-48">24/48</a></li>
+          <li><a href="/rotations#48-96">48/96</a></li>
+          <li><a href="/rotations#kelly">Kelly</a></li>
+          <li><a href="/rotations#panama">Panama (2-2-3)</a></li>
+          <li><a href="/rotations#dupont">DuPont</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/features">Features</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/changelog">Changelog</a></li>
+          <li><a href="/rotations#simulator">Simulator</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Help</h4>
+        <ul>
+          <li><a href="/faq">FAQ</a></li>
+          <li><a href="/support">Support</a></li>
+          <li><a href="mailto:team@kairosapp.dev">Email us</a></li>
+          <li><a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">App Store</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy">Privacy policy</a></li>
+          <li><a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of use</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-rule"></div>
+    <p class="foot-legal">© 2026 KairosDev LLC. Made for the people who work when everyone else is asleep.</p>
+  </div>
+</footer>
+<div class="search-overlay" id="search-overlay" hidden role="dialog" aria-modal="true" aria-label="Search Kairos">
+  <div class="search-box">
+    <input id="search-input" type="search" placeholder="Search rotations, features, answers…" autocomplete="off" aria-label="Search" />
+    <ul class="search-results" id="search-results"></ul>
+  </div>
+</div>
 
 <script src="/assets/site.js"></script>
 </body>

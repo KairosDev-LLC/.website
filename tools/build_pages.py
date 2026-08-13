@@ -40,22 +40,156 @@ def badge(extra=""):
 
 
 def nav():
-    links = "\n      ".join(
-        f'<a class="navlink" href="{href}">{label}</a>' for href, label in NAV_ITEMS
-    )
-    return f'''<nav class="site-nav">
+    return """<nav class="site-nav">
   <div class="nav-inner">
     <a class="brand" href="/">
-      <img src="/icon.png" alt="" width="300" height="300" />
-      Kairos
+      kairos
     </a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" hidden>Menu</button>
     <div class="nav-links" id="nav-links">
-      {links}
-      <a class="nav-cta" href="{APPSTORE}">Get the app</a>
+      <div class="nav-menu" data-open="false">
+        <button type="button" aria-expanded="false" aria-controls="menu-rotations">Rotations</button>
+        <div class="nav-panel" id="menu-rotations">
+          <div>
+            <h4>Patterns</h4>
+            <div class="nav-panel-list">
+            <a href="/rotations#24-48">24/48</a>
+            <a href="/rotations#48-96">48/96</a>
+            <a href="/rotations#kelly">Kelly</a>
+            <a href="/rotations#panama">Panama (2-2-3)</a>
+            <a href="/rotations#pitman">Pitman nights</a>
+            <a href="/rotations#dupont">DuPont</a>
+            <a href="/rotations#4-on-4-off">4 on / 4 off</a>
+            <a href="/rotations#5-2">5 on / 2 off</a>
+            </div>
+          </div>
+          <div>
+            <h4>By crew</h4>
+            <div class="nav-panel-list">
+              <a href="/rotations?crew=fire">Fire <span class="n">4</span></a>
+              <a href="/rotations?crew=ems">EMS <span class="n">3</span></a>
+              <a href="/rotations?crew=police">Police <span class="n">3</span></a>
+              <a href="/rotations?crew=nursing">Nursing <span class="n">3</span></a>
+              <a href="/rotations?crew=industrial">Industrial <span class="n">2</span></a>
+              <a href="/rotations?crew=transport">Transport <span class="n">2</span></a>
+            </div>
+            <h4 style="margin-top:16px">Tools</h4>
+            <div class="nav-panel-list">
+              <a href="/rotations#simulator">Rotation simulator</a>
+              <a href="/rotations#compare">Hours compared</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-menu" data-open="false">
+        <button type="button" aria-expanded="false" aria-controls="menu-app">The app</button>
+        <div class="nav-panel" id="menu-app">
+          <div>
+            <h4>Product</h4>
+            <div class="nav-panel-list">
+              <a href="/features">Features</a>
+              <a href="/features#panel-calendar">Calendar</a>
+              <a href="/features#panel-sharing">Sharing</a>
+              <a href="/features#panel-watch">Widgets</a>
+              <a href="/features#panel-privacy">Privacy</a>
+            </div>
+          </div>
+          <div>
+            <h4>Get it</h4>
+            <div class="nav-panel-list">
+              <a href="/pricing">Pricing</a>
+              <a href="/changelog">Changelog</a>
+              <a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">App Store</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a class="navlink" href="/faq">FAQ</a>
+      <a class="navlink" href="/support">Support</a>
+    </div>
+    <div class="nav-right">
+      <button class="nav-search" id="search-open" type="button" aria-label="Search the site">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span>Search</span>
+        <span class="sk"><kbd>Ctrl</kbd> <kbd>K</kbd></span>
+      </button>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch between light and dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.5 1.5m11.2 11.2 1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5"/></svg>
+      </button>
+      <a class="nav-cta" href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">Get the app</a>
     </div>
   </div>
-</nav>'''
+</nav>"""
+
+
+SEARCH_OVERLAY = """<div class="search-overlay" id="search-overlay" hidden role="dialog" aria-modal="true" aria-label="Search Kairos">
+  <div class="search-box">
+    <input id="search-input" type="search" placeholder="Search rotations, features, answers…" autocomplete="off" aria-label="Search" />
+    <ul class="search-results" id="search-results"></ul>
+  </div>
+</div>"""
+
+
+def site_foot():
+    return """<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="/">kairos</a>
+        <p>Every real shift rotation, drawn onto a live calendar. Kairos tracks
+        Kelly, Panama, DuPont, 24/48 and 48/96 on iPhone, iPad, Mac and Apple Watch —
+        no account, nothing to sync but your own iCloud.</p>
+        <p>Ask us anything: <a class="mail" href="mailto:team@kairosapp.dev">team@kairosapp.dev</a></p>
+        <div class="foot-social">
+          <a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855" aria-label="Kairos on the App Store"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg></a>
+          <a href="mailto:team@kairosapp.dev" aria-label="Email the Kairos team"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5.5A2.5 2.5 0 0 1 4.5 3h15A2.5 2.5 0 0 1 22 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5v-13Zm2.7.5 7.3 5.6L19.3 6H4.7Zm15.3 1.9-7.4 5.7a1 1 0 0 1-1.2 0L4 7.9V18h16V7.9Z"/></svg></a>
+          <a href="/support" aria-label="Support"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2a8 8 0 0 1 8 8 8 8 0 0 1-8 8 8 8 0 0 1-8-8 8 8 0 0 1 8-8Zm-1 12h2v2h-2v-2Zm1-9c-1.9 0-3.3 1.2-3.5 3h2c.1-.7.7-1.2 1.5-1.2.9 0 1.5.5 1.5 1.2 0 .6-.3.9-1.1 1.5-.9.6-1.4 1.2-1.4 2.5h2c0-.6.2-.9 1-1.5.9-.7 1.5-1.4 1.5-2.6C15.5 8.2 14 7 12 7Z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h4>Rotations</h4>
+        <ul>
+          <li><a href="/rotations#24-48">24/48</a></li>
+          <li><a href="/rotations#48-96">48/96</a></li>
+          <li><a href="/rotations#kelly">Kelly</a></li>
+          <li><a href="/rotations#panama">Panama (2-2-3)</a></li>
+          <li><a href="/rotations#dupont">DuPont</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/features">Features</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/changelog">Changelog</a></li>
+          <li><a href="/rotations#simulator">Simulator</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Help</h4>
+        <ul>
+          <li><a href="/faq">FAQ</a></li>
+          <li><a href="/support">Support</a></li>
+          <li><a href="mailto:team@kairosapp.dev">Email us</a></li>
+          <li><a href="https://apps.apple.com/us/app/kairos-shift-tracker/id6792157855">App Store</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy">Privacy policy</a></li>
+          <li><a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of use</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-rule"></div>
+    <p class="foot-legal">© 2026 KairosDev LLC. Made for the people who work when everyone else is asleep.</p>
+  </div>
+</footer>"""
+
+
+THEME_BOOT = """<script>(function(){try{var m=localStorage.getItem('kairos-theme');if(!m&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)m='light';document.documentElement.setAttribute('data-theme',m||'dark');}catch(e){}}());</script>"""
 
 
 def footer(head, tagline, eyebrow="Get Kairos"):
@@ -131,11 +265,14 @@ def page(slug, title, description, h1, sub, body,
 <meta property="og:site_name" content="Kairos" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:url" content="{url}" />
-<meta property="og:image" content="https://www.kairosapp.dev/icon.png" />
-<meta name="twitter:card" content="summary" />
+<meta property="og:image" content="https://www.kairosapp.dev/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Kairos — taking the guesswork out of shift work" />
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="{title}" />
 <meta name="twitter:description" content="{description}" />
-<meta name="twitter:image" content="https://www.kairosapp.dev/icon.png" />
+<meta name="twitter:image" content="https://www.kairosapp.dev/og-image.png" />
 <link rel="canonical" href="{url}" />
 
 <script type="application/ld+json">
@@ -150,6 +287,7 @@ def page(slug, title, description, h1, sub, body,
 </script>
 {extra_head}
 <script>document.documentElement.classList.add('js');</script>
+{THEME_BOOT}
 <link rel="stylesheet" href="/assets/site.css" />
 </head>
 <body>
@@ -174,6 +312,9 @@ def page(slug, title, description, h1, sub, body,
 </main>
 
 {footer(cta_head, cta_tag, cta_eyebrow)}
+
+{site_foot()}
+{SEARCH_OVERLAY}
 {extra_body}
 <script src="/assets/site.js"></script>
 </body>
@@ -365,20 +506,83 @@ ROTATIONS = [
 ]
 
 
+ROT_SLUGS = ["24-48", "48-96", "kelly", "panama", "pitman", "dupont", "4-on-4-off", "5-2"]
+
+ROT_TAGS = {
+    "24-48": ["Fire", "24-hour", "3-day cycle"],
+    "48-96": ["Fire", "24-hour", "Long breaks"],
+    "kelly": ["Fire", "24-hour", "9-day cycle"],
+    "panama": ["Police", "EMS", "12-hour"],
+    "pitman": ["Nursing", "Nights", "12-hour"],
+    "dupont": ["Industrial", "Nights", "Rotating"],
+    "4-on-4-off": ["Industrial", "Transport", "12-hour"],
+    "5-2": ["Baseline", "Weekdays", "8-hour"],
+}
+
+ROT_CATS = {
+    "24-48": "fire 24h short", "48-96": "fire 24h long", "kelly": "fire 24h long",
+    "panama": "police ems 12h weekend", "pitman": "nursing nights 12h weekend",
+    "dupont": "industrial nights 12h long", "4-on-4-off": "industrial transport 12h",
+    "5-2": "baseline short",
+}
+
+ROT_CHIPS = [
+    ("all", "All", 8), ("fire", "Fire", 3), ("police", "Police", 1), ("ems", "EMS", 1),
+    ("nursing", "Nursing", 1), ("industrial", "Industrial", 2), ("transport", "Transport", 1),
+    ("12h", "12-hour", 4), ("24h", "24-hour", 3), ("nights", "Nights", 2),
+    ("weekend", "Every other weekend", 2), ("long", "Long breaks", 3),
+]
+
+
 def rotations_page():
-    cards = "\n".join(f'''        <div class="card glass-light reveal" style="--reveal-i:{i}">
+    # The rotation library reads as a gallery: a filterable grid of preview
+    # cards first, then the long-form write-up for each pattern underneath.
+    gcards = []
+    for i, ((name, cycle, hrs, short, long), slug) in enumerate(zip(ROTATIONS, ROT_SLUGS)):
+        tags = "".join(f"<span>{t}</span>" for t in ROT_TAGS[slug])
+        gcards.append(f'''        <article class="g-card reveal" data-cats="{ROT_CATS[slug]}" style="--reveal-i:{i % 4}">
+          <div class="thumb">
+            <img src="/assets/thumbs/{slug}.svg" alt="{name} drawn onto a month of the Kairos calendar" width="1200" height="854" loading="lazy" />
+          </div>
+          <h3>{name}</h3>
+          <p class="g-tags">{tags}</p>
+          <p class="g-meta"><span>{hrs}</span><span>{cycle}</span></p>
+          <a class="stretch" href="#{slug}" aria-label="{name}"></a>
+        </article>''')
+    gallery_cards = "\n".join(gcards)
+
+    gallery_chips = "\n        ".join(
+        f'<button class="chip" type="button" data-filter="{k}" aria-pressed="{"true" if k == "all" else "false"}">'
+        f'<span>{label}</span><span class="n">{n}</span></button>'
+        for k, label, n in ROT_CHIPS
+    )
+
+    cards = "\n".join(f'''        <div class="card glass-light reveal" id="{slug}" style="--reveal-i:{i}">
           <span class="fnum">{cycle} · {hrs}</span>
           <h3>{name}</h3>
           <p><strong>{short}</strong></p>
           <p>{long}</p>
-        </div>''' for i, (name, cycle, hrs, short, long) in enumerate(ROTATIONS))
+        </div>''' for i, ((name, cycle, hrs, short, long), slug) in enumerate(zip(ROTATIONS, ROT_SLUGS)))
 
     rows = "\n".join(
         f'            <tr><td>{name}</td><td>{cycle}</td><td>{hrs}</td><td>{short}</td></tr>'
         for name, cycle, hrs, short, _ in ROTATIONS
     )
 
-    body = f'''  <section class="section-ink">
+    body = f'''  <section class="section-ink" id="library">
+    <div class="wrap">
+      <div class="chip-row" id="chip-row" role="group" aria-label="Filter rotations">
+        {gallery_chips}
+      </div>
+
+      <div class="gallery-grid" id="gallery-grid" data-per-page="8">
+{gallery_cards}
+        <p class="g-empty" id="gallery-empty" hidden>No rotation matches that filter.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-ink" id="simulator">
     <div class="wrap">
       <p class="eyebrow">Interactive</p>
       <h2 class="section-title">Rotation simulator</h2>
@@ -468,7 +672,7 @@ def rotations_page():
     </div>
   </section>
 
-  <section class="section-paper">
+  <section class="section-paper" id="compare">
     <div class="wrap">
       <p class="eyebrow">Side by side</p>
       <h2 class="section-title">All eight at a glance</h2>
