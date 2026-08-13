@@ -161,5 +161,15 @@
       ]
     }
   ],
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/vercel.json",
+      "destination": "/deliberately-absent"
+    },
+    {
+      "source": "/.vercelignore",
+      "destination": "/deliberately-absent"
+    }
+  ]
 }
