@@ -1682,7 +1682,7 @@ kbd {
 
 /* ---------- Gallery hero ---------- */
 .gallery-head {
-  padding: 64px 0 26px;
+  padding: 52px 0 22px;
   text-align: center;
 }
 .gallery-head h1 {
@@ -2275,3 +2275,48 @@ html:not(.js) #pager { display: none; }
   .deck { width: min(560px, 90vw); }
   .stage3d::before { width: min(560px, 90vw); }
 }
+
+/* ---------- WebGL stage ----------
+   The canvas replaces the CSS fallback only once a context exists, so a
+   machine without WebGL still gets the layered calendar deck. */
+.gl-stage {
+  position: relative;
+  width: min(1000px, 94vw);
+  height: clamp(300px, 38vw, 470px);
+  margin: 6px auto 0;
+  touch-action: pan-y;
+}
+.gl-stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+}
+.gl-stage.is-grabbing canvas { cursor: grabbing; }
+.gl-stage.gl-live .gl-fallback { display: none; }
+.gl-stage::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6%;
+  width: 70%;
+  height: 130px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, var(--flame-dim), transparent 70%);
+  filter: blur(30px);
+  pointer-events: none;
+  z-index: -1;
+}
+.gl-tabs { margin-top: 8px; }
+@media (max-width: 640px) {
+  .gl-stage { height: clamp(300px, 78vw, 420px); }
+}
+
+/* The WebGL tab bar belongs to the live scene; the fallback ships its own
+   inside #stage-fallback, so only one is ever on screen. */
+.gl-tabs { display: none; }
+.gl-stage.gl-live + .gl-tabs { display: flex; }
+.gl-stage.gl-live ~ .stage-hint { display: block; }
+.gl-stage:not(.gl-live) ~ .stage-hint { display: none; }

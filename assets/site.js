@@ -1018,7 +1018,7 @@
     // pushes the rest back in Z. Auto-advance runs until the reader takes
     // over, and stops for good after that.
     var cards = $$('.deck-card', deck);
-    var tabs = $$('.deck-tab');
+    var tabs = $$('#deck-tabs .deck-tab');
     var front = 0;
     var auto = null;
 

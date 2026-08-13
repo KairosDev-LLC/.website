@@ -301,53 +301,70 @@
       <p>Browse the patterns crews actually work — what each one costs you in
       hours, and how Kairos puts it on your iPhone, iPad, Mac and Watch.</p>
 
-      <div class="stage3d" id="stage3d">
-        <div class="deck" id="deck">
-          <div class="deck-card" data-rot="24-48" style="z-index:10">
-            <img src="/assets/thumbs/24-48.svg" alt="A month of the 24/48 rotation on the Kairos calendar" width="1200" height="854" loading="eager" />
+      <div class="gl-stage" id="gl-stage">
+        <canvas id="gl-canvas" hidden aria-hidden="true"></canvas>
+        <div class="gl-fallback" id="stage-fallback">
+        <div class="stage3d" id="stage3d">
+          <div class="deck" id="deck">
+            <div class="deck-card" data-rot="24-48" style="z-index:10">
+              <img src="/assets/thumbs/24-48.svg" alt="A month of the 24/48 rotation on the Kairos calendar" width="1200" height="854" loading="eager" />
+            </div>
+            <div class="deck-card" data-rot="panama" style="z-index:9">
+              <img src="/assets/thumbs/panama.svg" alt="" width="1200" height="854" loading="lazy" />
+            </div>
+            <div class="deck-card" data-rot="kelly" style="z-index:8">
+              <img src="/assets/thumbs/kelly.svg" alt="" width="1200" height="854" loading="lazy" />
+            </div>
+            <div class="deck-card" data-rot="dupont" style="z-index:7">
+              <img src="/assets/thumbs/dupont.svg" alt="" width="1200" height="854" loading="lazy" />
+            </div>
+            <div class="deck-badges" aria-hidden="true">
+              <div class="deck-badge badge-a"><span class="dot"></span>On duty · 14h left</div>
+              <div class="deck-badge is-night badge-b"><span class="dot"></span>Night shift</div>
+              <div class="deck-badge is-off badge-c"><span class="dot"></span>4 days off</div>
+            </div>
           </div>
-          <div class="deck-card" data-rot="panama" style="z-index:9">
-            <img src="/assets/thumbs/panama.svg" alt="" width="1200" height="854" loading="lazy" />
+          <div class="deck-tabs" id="deck-tabs" role="tablist" aria-label="Preview a rotation in 3D">
+            <button class="deck-tab" type="button" role="tab" data-rot="24-48" id="deck-tab-24-48"
+              aria-selected="true" aria-controls="deck" tabindex="0">
+              <span class="dt-name">24/48</span><span class="dt-meta">56 hrs/wk · 3-day cycle</span>
+            </button>
+            <button class="deck-tab" type="button" role="tab" data-rot="panama" id="deck-tab-panama"
+              aria-selected="false" aria-controls="deck" tabindex="-1">
+              <span class="dt-name">Panama</span><span class="dt-meta">42 hrs/wk · 14-day cycle</span>
+            </button>
+            <button class="deck-tab" type="button" role="tab" data-rot="kelly" id="deck-tab-kelly"
+              aria-selected="false" aria-controls="deck" tabindex="-1">
+              <span class="dt-name">Kelly</span><span class="dt-meta">56 hrs/wk · 9-day cycle</span>
+            </button>
+            <button class="deck-tab" type="button" role="tab" data-rot="dupont" id="deck-tab-dupont"
+              aria-selected="false" aria-controls="deck" tabindex="-1">
+              <span class="dt-name">DuPont</span><span class="dt-meta">42 hrs/wk · 28-day cycle</span>
+            </button>
           </div>
-          <div class="deck-card" data-rot="kelly" style="z-index:8">
-            <img src="/assets/thumbs/kelly.svg" alt="" width="1200" height="854" loading="lazy" />
-          </div>
-          <div class="deck-card" data-rot="dupont" style="z-index:7">
-            <img src="/assets/thumbs/dupont.svg" alt="" width="1200" height="854" loading="lazy" />
-          </div>
-          <div class="deck-badges" aria-hidden="true">
-            <div class="deck-badge badge-a"><span class="dot"></span>On duty · 14h left</div>
-            <div class="deck-badge is-night badge-b"><span class="dot"></span>Night shift</div>
-            <div class="deck-badge is-off badge-c"><span class="dot"></span>4 days off</div>
-          </div>
+          <p class="stage-hint">Pick a rotation, then move your pointer to look around it.</p>
         </div>
-        <div class="deck-tabs" id="deck-tabs" role="tablist" aria-label="Preview a rotation in 3D">
-          <button class="deck-tab" type="button" role="tab" data-rot="24-48" id="deck-tab-24-48"
-            aria-selected="true" aria-controls="deck" tabindex="0">
-            <span class="dt-name">24/48</span><span class="dt-meta">56 hrs/wk · 3-day cycle</span>
-          </button>
-          <button class="deck-tab" type="button" role="tab" data-rot="panama" id="deck-tab-panama"
-            aria-selected="false" aria-controls="deck" tabindex="-1">
-            <span class="dt-name">Panama</span><span class="dt-meta">42 hrs/wk · 14-day cycle</span>
-          </button>
-          <button class="deck-tab" type="button" role="tab" data-rot="kelly" id="deck-tab-kelly"
-            aria-selected="false" aria-controls="deck" tabindex="-1">
-            <span class="dt-name">Kelly</span><span class="dt-meta">56 hrs/wk · 9-day cycle</span>
-          </button>
-          <button class="deck-tab" type="button" role="tab" data-rot="dupont" id="deck-tab-dupont"
-            aria-selected="false" aria-controls="deck" tabindex="-1">
-            <span class="dt-name">DuPont</span><span class="dt-meta">42 hrs/wk · 28-day cycle</span>
-          </button>
         </div>
-        <p class="stage-hint">Pick a rotation, then move your pointer to look around it.</p>
       </div>
+      <div class="deck-tabs gl-tabs" role="tablist" aria-label="Show a screen from the app">
+        <button class="deck-tab" type="button" role="tab" data-gl-tab aria-selected="true" tabindex="0">
+          <span class="dt-name">On duty</span><span class="dt-meta">Live status &amp; countdown</span>
+        </button>
+        <button class="deck-tab" type="button" role="tab" data-gl-tab aria-selected="false" tabindex="-1">
+          <span class="dt-name">Calendar</span><span class="dt-meta">Colour-coded month</span>
+        </button>
+        <button class="deck-tab" type="button" role="tab" data-gl-tab aria-selected="false" tabindex="-1">
+          <span class="dt-name">Vacation</span><span class="dt-meta">Overrides &amp; swaps</span>
+        </button>
+      </div>
+      <p class="stage-hint">Drag to orbit the scene &mdash; these are the real app screens, rendered live in WebGL.</p>
 
     </div>
   </header>
 
   <div class="wrap">
     <div class="chip-row" id="chip-row" role="group" aria-label="Filter by first responder service and shift pattern">
-        <button class="chip" type="button" data-filter="all" aria-pressed="true"><span>All</span><span class="n">14</span></button>
+        <button class="chip" type="button" data-filter="all" aria-pressed="true"><span>All</span><span class="n">15</span></button>
         <button class="chip" type="button" data-filter="fire" aria-pressed="false"><span>Fire</span><span class="n">3</span></button>
         <button class="chip" type="button" data-filter="ems" aria-pressed="false"><span>EMS</span><span class="n">1</span></button>
         <button class="chip" type="button" data-filter="police" aria-pressed="false"><span>Police</span><span class="n">1</span></button>
@@ -358,7 +375,7 @@
         <button class="chip" type="button" data-filter="24h" aria-pressed="false"><span>24-hour</span><span class="n">3</span></button>
         <button class="chip" type="button" data-overflow="true" data-filter="nights" aria-pressed="false"><span>Nights</span><span class="n">2</span></button>
         <button class="chip" type="button" data-overflow="true" data-filter="weekend" aria-pressed="false"><span>Every other weekend</span><span class="n">2</span></button>
-        <button class="chip" type="button" data-overflow="true" data-filter="app" aria-pressed="false"><span>App features</span><span class="n">6</span></button>
+        <button class="chip" type="button" data-overflow="true" data-filter="app" aria-pressed="false"><span>App features</span><span class="n">7</span></button>
         <span class="chip-sep" aria-hidden="true"></span>
         <button class="chip chip-more" id="chip-more" type="button" aria-expanded="false">See more</button>
     </div>
@@ -430,11 +447,19 @@
         </article>
         <article class="g-card reveal" data-cats="app" data-name="Live duty status" style="--reveal-i:0">
           <div class="thumb">
-            <img src="/assets/thumbs/live-status.svg" alt="Live duty status shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
+            <img src="/assets/thumbs/live-status.webp" alt="The Kairos duty screen showing live on-duty status and a shift countdown" width="1200" height="854" loading="lazy" />
           </div>
           <h3>Live duty status</h3>
           <p class="g-meta"><span>Feature</span><span>iOS · watchOS</span></p>
           <a class="stretch" href="/features#panel-dashboard" aria-label="Live duty status"></a>
+        </article>
+        <article class="g-card reveal" data-cats="app" data-name="Month calendar" style="--reveal-i:1">
+          <div class="thumb">
+            <img src="/assets/thumbs/month-calendar.webp" alt="The Kairos month calendar, colour-coded by duty status" width="1200" height="854" loading="lazy" />
+          </div>
+          <h3>Month calendar</h3>
+          <p class="g-meta"><span>Feature</span><span>iOS · iPadOS</span></p>
+          <a class="stretch" href="/features#panel-calendar" aria-label="Month calendar"></a>
         </article>
         <article class="g-card reveal" data-cats="app" data-name="Shared schedules" style="--reveal-i:1">
           <div class="thumb">
@@ -470,7 +495,7 @@
         </article>
         <article class="g-card reveal" data-cats="app" data-name="Vacation & swaps" style="--reveal-i:1">
           <div class="thumb">
-            <img src="/assets/thumbs/vacation.svg" alt="Vacation & swaps shown on the Kairos calendar" width="1200" height="854" loading="lazy" />
+            <img src="/assets/thumbs/vacation.webp" alt="The Kairos vacation screen showing an override on a scheduled day" width="1200" height="854" loading="lazy" />
           </div>
           <h3>Vacation & swaps</h3>
           <p class="g-meta"><span>Feature</span><span>iOS · macOS</span></p>
@@ -821,6 +846,7 @@
 </div>
 
 <script src="assets/site.js"></script>
+<script src="/assets/kairos3d.js" defer></script>
 <div class="search-overlay" id="search-overlay" hidden role="dialog" aria-modal="true" aria-label="Search Kairos">
   <div class="search-box">
     <input id="search-input" type="search" placeholder="Search rotations, features, answers…" autocomplete="off" aria-label="Search" />

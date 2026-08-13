@@ -86,9 +86,28 @@ resolve to real ids on real pages.
 
 ## The 3D layer
 
-The site is a 3D site in the sense that category uses the term, built with CSS
-3D transforms rather than WebGL — no Three.js, no GSAP, no build step, and
-nothing to download beyond the stylesheet.
+The hero is a real WebGL scene: `assets/kairos3d.js` (~19 KB, no libraries)
+opens a WebGL2 context, uploads slab geometry, and renders the actual App
+Store screens as textures under a perspective camera with per-pixel lighting,
+a rounded-rectangle mask in the fragment shader, and a planar reflection
+mirrored about a floor plane below the devices.
+
+- **Camera** orbits on pointer drag with inertia, follows the pointer when
+  idle, and drifts slowly when untouched.
+- **Tabs** (`[data-gl-tab]`) move a screen to the front of the arc; the other
+  devices ease back in Z. Arrow keys work.
+- **Reflection** is a second pass with `depthMask(false)` and front-face
+  culling, mirrored about `FLOOR_Y` so it never occludes the real geometry.
+- **Cost control**: DPR capped at 2, rendering paused by IntersectionObserver
+  when the stage scrolls away, and under `prefers-reduced-motion` the scene
+  snaps to its target, draws once, and stops requesting frames.
+
+If the context cannot be created, if the shader fails to link, or if the file
+never loads, `#stage-fallback` stays visible and the reader gets the CSS 3D
+deck described below instead. Only one tab bar is ever on screen.
+
+The rest of the depth is CSS 3D transforms — no Three.js, no GSAP, no build
+step, nothing to download beyond the stylesheet.
 
 - **Hero deck** (`.stage3d` / `.deck`) — a perspective stage holding one card
   per rotation in Z. It is a real tab panel: the tab bar under it brings a
@@ -120,3 +139,25 @@ owns outright. The footer links the App Store, email, support and the feed.
 No third-party social profiles are linked until real accounts exist — the
 durability checker verifies outbound links, so an invented handle would fail
 CI rather than quietly 404 for readers.
+
+
+## Where the assets come from
+
+`tools/gen_app_assets.py` pulls the product assets from their real sources so
+the site cannot drift from the product:
+
+- **App screens** — the App Store listing via the iTunes lookup API, fetched
+  at full resolution and re-encoded as 720px WebP textures for the 3D hero
+  plus 360px card copies. Whatever is on the listing is what the site shows.
+- **The mark** — the organisation's `.github` brand repository
+  (`Logo & Branding/apptransparent.png`), the same figurehead the GitHub org
+  profile uses. The engraving is too fine to read under ~32px, so the nav mark
+  is a high-contrast silhouette derived from it on a rounded tile; the
+  original stays in `assets/brand/`.
+- **Card art** — the real screens composited onto a tinted product backdrop at
+  the 1200x854 card ratio, since an App Store screenshot is too tall to
+  letterbox into a landscape slot.
+
+Re-run it when the listing or the branding changes:
+
+    python3 tools/gen_app_assets.py
