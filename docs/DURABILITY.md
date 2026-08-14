@@ -128,14 +128,22 @@ deployment. The CDN serves the static site and nothing else.
 
 ## Deploying
 
-`main` is production. `.github/workflows/deploy.yml` deploys on every push to
-`main`, but **only when `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`
-exist as repository secrets** — without them the job is skipped, not failed.
+`main` is production. The **Vercel Git integration** deploys it: Vercel watches
+the repository and builds every push to `main` on its own. Production served the
+`d51b3c2` tree 57 seconds after that commit was pushed, with no CI involvement.
 
-The workflow re-runs the durability checks against the exact tree being
-shipped, deploys, and then polls the production URL until it actually serves
-the new build. A deploy that does not go live fails the job rather than
-reporting success.
+There is deliberately no deploy workflow. One existed
+(`.github/workflows/deploy.yml`) and was removed on 2026-08-14: it was gated on a
+`VERCEL_TOKEN` repository secret that was never set, so its deploy job was
+`skipped` on all three runs while the workflow still reported success. A green
+check that never deployed or verified anything is worse than no check, because it
+advertises coverage the repository does not have.
 
-If the Vercel Git integration is connected to the repository instead, that
-path deploys on push as well and this workflow is redundant but harmless.
+Durability is still enforced on every push by `site-durability`, which runs
+`tools/check_site.py` against the tree being shipped. What is no longer automated
+is the post-deploy assertion that production actually serves the new build; verify
+that by diffing the live bytes against the working tree when it matters.
+
+If CI-driven deploys are wanted again, set `VERCEL_TOKEN`, `VERCEL_ORG_ID` and
+`VERCEL_PROJECT_ID` as repository secrets **and** disable the Vercel Git
+integration for production first, or both paths will deploy the same commit.
