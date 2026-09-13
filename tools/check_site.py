@@ -353,6 +353,25 @@ def main() -> int:
         else:
             ok("scroll-reveal is gated on .js, so content stays visible without JavaScript")
 
+        # The flame fill is the same colour in both themes, so text on it cannot
+        # use a theme-flipping foreground: white on flame is 3.1:1 and fails
+        # WCAG AA, while --on-flame (near-black) is 6.3:1. --ink is the trap,
+        # because it is near-black in the dark theme and white in the light one,
+        # so the failure only appears for light-theme visitors.
+        flame_bg = re.compile(r"background:\s*var\(--flame(?:-bright)?\)")
+        bad_fg = re.compile(
+            r"(?<![-\w])color:\s*(#fff(?:fff)?|var\(--ink\)|rgba\(\s*255,\s*255,\s*255[^)]*\))"
+            r"(?=\s*[;}]|\s*$)")
+        offenders = []
+        for block in css.split("}"):
+            if flame_bg.search(block) and bad_fg.search(block):
+                offenders.append(block.split("{")[0].strip().replace("\n", " ")[-70:])
+        if offenders:
+            fail("text on a flame fill uses a foreground that fails contrast in one theme"
+                 " (use --on-flame):\n      " + "\n      ".join(sorted(set(offenders))))
+        else:
+            ok("text on a flame fill uses a theme-independent, AA-contrast foreground")
+
 
     # 10b. security headers -------------------------------------------------
     # A Content-Security-Policy is only as good as its hashes: add an inline
