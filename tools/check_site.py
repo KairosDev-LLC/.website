@@ -19,6 +19,7 @@ import argparse
 import base64
 import hashlib
 import json
+import mimetypes
 import os
 import re
 import subprocess
@@ -352,6 +353,25 @@ def main() -> int:
         else:
             ok("scroll-reveal is gated on .js, so content stays visible without JavaScript")
 
+        # The flame fill is the same colour in both themes, so text on it cannot
+        # use a theme-flipping foreground: white on flame is 3.1:1 and fails
+        # WCAG AA, while --on-flame (near-black) is 6.3:1. --ink is the trap,
+        # because it is near-black in the dark theme and white in the light one,
+        # so the failure only appears for light-theme visitors.
+        flame_bg = re.compile(r"background:\s*var\(--flame(?:-bright)?\)")
+        bad_fg = re.compile(
+            r"(?<![-\w])color:\s*(#fff(?:fff)?|var\(--ink\)|rgba\(\s*255,\s*255,\s*255[^)]*\))"
+            r"(?=\s*[;}]|\s*$)")
+        offenders = []
+        for block in css.split("}"):
+            if flame_bg.search(block) and bad_fg.search(block):
+                offenders.append(block.split("{")[0].strip().replace("\n", " ")[-70:])
+        if offenders:
+            fail("text on a flame fill uses a foreground that fails contrast in one theme"
+                 " (use --on-flame):\n      " + "\n      ".join(sorted(set(offenders))))
+        else:
+            ok("text on a flame fill uses a theme-independent, AA-contrast foreground")
+
 
     # 10b. security headers -------------------------------------------------
     # A Content-Security-Policy is only as good as its hashes: add an inline
@@ -424,6 +444,41 @@ def main() -> int:
                      + "\n      ".join(sorted(set(uncovered))))
             else:
                 ok("every inline script is covered by a CSP hash")
+
+        # A forced Content-Type is a promise about every file the rule matches,
+        # and X-Content-Type-Options: nosniff means the browser believes it over
+        # the bytes. /assets/thumbs/ held nothing but SVGs when its rule was
+        # written; WebP cards landed in the same directory later, were served as
+        # image/svg+xml, and rendered as three broken images that still returned
+        # 200. Resolving is not the same as being servable.
+        equivalent = {
+            ("application/rss+xml", "application/xml"),
+            ("application/rss+xml", "text/xml"),
+        }
+        contradicted = []
+        for rule in deploy.get("headers", []):
+            forced = next((h["value"].split(";")[0].strip()
+                           for h in rule.get("headers", [])
+                           if h["key"].lower() == "content-type"), None)
+            if not forced:
+                continue
+            source = rule.get("source", "")
+            try:
+                pattern = re.compile(
+                    "^" + re.escape(source).replace(r"\(\.\*\)", "(.*)") + "$")
+            except re.error:
+                continue
+            for path in sorted(on_disk):
+                if not pattern.match("/" + path):
+                    continue
+                actual = mimetypes.guess_type(path)[0]
+                if actual and actual != forced and (forced, actual) not in equivalent:
+                    contradicted.append(f"{source} serves /{path} as {forced}, but it is {actual}")
+        if contradicted:
+            fail("header rule forces a Content-Type the file contradicts:\n      "
+                 + "\n      ".join(contradicted))
+        else:
+            ok("no header rule forces a Content-Type its files contradict")
 
     # 10c. markup that CSP cannot save you from ----------------------------
     risky = []

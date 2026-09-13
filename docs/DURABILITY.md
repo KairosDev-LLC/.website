@@ -52,9 +52,45 @@ It fails the build on any of these:
 12. `site.js` referencing an element `id` that no page defines.
 13. Scroll-reveal styles that hide content without a `.js` guard — the failure
     mode where a JavaScript error leaves the page permanently blank.
+14. A `headers` rule in `vercel.json` that forces a `Content-Type` onto files
+    that are not that type.
+15. Text on a flame fill using a foreground that fails WCAG AA contrast in
+    either theme.
 
 Each check was verified by deliberately breaking the site and confirming the
 checker caught it. Do not weaken a check to make a build pass; fix the site.
+
+### Forced Content-Types are a promise about a whole directory
+
+Check 14 exists because `/assets/thumbs/(.*)` forced `Content-Type:
+image/svg+xml` on everything in that directory, which was true right up until
+three WebP cards were generated into it. Those files returned `200`, matched
+their `<img src>`, and passed every existing check — but `nosniff` told the
+browser to believe the header over the bytes, so all three rendered as broken
+images on the home page.
+
+Scope a forced `Content-Type` to the extension it describes
+(`/assets/thumbs/(.*).svg`), and keep directory-wide rules to headers that are
+true of any file, like `Cache-Control`. A URL that resolves is not the same as
+a URL that is servable.
+
+### The flame is a fill, not a foreground
+
+Check 15 exists because `--ink` is near-black in the dark theme and white in
+the light one, so `background: var(--flame); color: var(--ink)` renders as
+6.3:1 for one half of the audience and 3.1:1 — below WCAG AA — for the other.
+The flame fill is the same colour in both themes, so its foreground has to be
+too. Two tokens keep that honest:
+
+* `--on-flame` — near-black, for any text sitting **on** a flame fill. Never
+  `#fff`, and never `--ink`.
+* `--flame-text` — the flame used **as** text. The dark canvas takes the brand
+  orange as-is; the light theme darkens it to `#cc3600` to clear AA on white.
+
+Related trap, same section: dimming a block of copy with `opacity` composites
+the entire subtree, so a link inside an `opacity: 0.85` paragraph loses
+contrast no matter what colour it declares. Soften body copy with a colour
+(`--paper-soft`) instead.
 
 ## Graceful degradation
 

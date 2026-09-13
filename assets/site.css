@@ -23,6 +23,19 @@
   --flame-bright: #ff7440;
   --flame-dim: rgba(255, 90, 31, 0.16);
   --flame-faint: rgba(255, 90, 31, 0.08);
+  /* Text sitting on a flame fill. The fill is identical in both themes, so
+     its foreground has to be too: white on flame is 3.1:1 and fails AA,
+     near-black on flame is 6.3:1. */
+  --on-flame: #0a0a0b;
+  --on-flame-soft: rgba(10, 10, 11, 0.78);
+  /* Flame used as text rather than as a fill. On the dark canvas the brand
+     orange clears AA by itself; on the light canvas it has to darken to do
+     the same, so only the light theme overrides this. */
+  --flame-text: var(--flame);
+  /* Body copy softened against the canvas. Kept as a colour, not an
+     opacity: opacity composites the whole subtree, so a dimmed
+     paragraph silently dims any link inside it too. */
+  --paper-soft: #cbcbca;
 
   /* ---------- Type ----------
      One sans across the site, matching the gallery reference. --mono is
@@ -59,6 +72,8 @@
   --line-on-ink: rgba(11, 11, 15, 0.12);
   --line-on-paper: rgba(11, 11, 15, 0.10);
   --duty-off: rgba(11, 11, 15, 0.12);
+  --flame-text: #cc3600;
+  --paper-soft: #39393c;
 }
 
 * { box-sizing: border-box; }
@@ -127,7 +142,7 @@ select:focus-visible,
   top: 0;
   z-index: 100;
   background: var(--flame);
-  color: var(--ink);
+  color: var(--on-flame);
   padding: 12px 20px;
   font-family: var(--mono);
   font-size: 13px;
@@ -259,7 +274,7 @@ a.navlink {
 a.navlink:hover { opacity: 1; }
 a.navlink[aria-current="page"] {
   opacity: 1;
-  color: var(--flame);
+  color: var(--flame-text);
 }
 .nav-cta {
   font-family: var(--mono);
@@ -268,7 +283,7 @@ a.navlink[aria-current="page"] {
   text-transform: uppercase;
   text-decoration: none;
   background: var(--flame);
-  color: var(--ink);
+  color: var(--on-flame);
   font-weight: 700;
   padding: 10px 16px;
   border-radius: 4px;
@@ -309,7 +324,7 @@ a.navlink[aria-current="page"] {
 }
 .btn-primary {
   background: var(--flame);
-  color: var(--ink);
+  color: var(--on-flame);
   font-weight: 700;
 }
 .btn-primary:hover { background: var(--flame-bright); }
@@ -362,7 +377,7 @@ a.navlink[aria-current="page"] {
   font-size: 13px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--flame);
+  color: var(--flame-text);
   margin: 0 0 26px;
   position: relative;
   z-index: 1;
@@ -502,7 +517,7 @@ p.lede {
   padding: 4px 9px;
   border-radius: 999px;
   background: var(--flame);
-  color: var(--ink);
+  color: var(--on-flame);
   font-weight: 700;
   vertical-align: middle;
 }
@@ -576,7 +591,7 @@ p.lede {
 .stat-cell .num {
   font-family: var(--mono);
   font-size: clamp(24px, 3vw, 34px);
-  color: var(--flame);
+  color: var(--flame-text);
   margin: 0 0 6px;
 }
 .stat-cell .label {
@@ -621,7 +636,7 @@ p.lede {
 .tab-btn[aria-selected="true"] {
   background: var(--flame);
   border-color: var(--flame);
-  color: var(--ink);
+  color: var(--on-flame);
   font-weight: 700;
   opacity: 1;
 }
@@ -651,7 +666,7 @@ html:not(.js) .tab-panel::before {
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--flame);
+  color: var(--flame-text);
   margin-bottom: 16px;
 }
 .tab-panel {
@@ -690,7 +705,7 @@ html:not(.js) .tab-panel::before {
   top: 50%;
   transform: translateY(-50%);
   font-size: 22px;
-  color: var(--flame);
+  color: var(--flame-text);
   transition: transform 0.2s ease;
   line-height: 1;
 }
@@ -705,7 +720,7 @@ html:not(.js) .tab-panel::before {
 }
 .faq-answer p { margin: 0 0 12px; }
 .faq-answer p:last-child { margin-bottom: 0; }
-.faq-answer a { color: var(--flame); }
+.faq-answer a { color: var(--flame-text); }
 
 .faq-search {
   width: 100%;
@@ -800,7 +815,7 @@ html:not(.js) .tab-panel::before {
   z-index: 1;
   font-family: var(--mono);
   font-size: 17px;
-  color: var(--flame);
+  color: var(--flame-text);
 }
 .sim-status-text { display: flex; flex-direction: column; gap: 8px; min-width: 220px; }
 .sim-status-label {
@@ -820,7 +835,7 @@ html:not(.js) .tab-panel::before {
   font-size: 13px;
   opacity: 0.72;
 }
-.sim-countdown strong { color: var(--flame); font-weight: 400; }
+.sim-countdown strong { color: var(--flame-text); font-weight: 400; }
 
 .cal-head {
   display: flex;
@@ -983,7 +998,7 @@ html:not(.js) .tab-panel::before {
 }
 .billing-toggle button[aria-pressed="true"] {
   background: var(--flame);
-  color: var(--ink);
+  color: var(--on-flame);
   font-weight: 700;
   opacity: 1;
 }
@@ -1013,7 +1028,7 @@ html:not(.js) .tab-panel::before {
   font-family: var(--mono);
   font-size: 42px;
   line-height: 1;
-  color: var(--flame);
+  color: var(--flame-text);
 }
 .price-amount .per {
   font-size: 14px;
@@ -1042,7 +1057,7 @@ html:not(.js) .tab-panel::before {
 .price-card li { display: flex; gap: 10px; align-items: flex-start; opacity: 0.82; }
 .price-card li::before {
   content: "\2713";
-  color: var(--flame);
+  color: var(--flame-text);
   flex-shrink: 0;
 }
 .price-card li.no::before { content: "\00d7"; color: rgba(244, 241, 234, 0.35); }
@@ -1073,7 +1088,7 @@ table.compare thead th {
 }
 table.compare tbody tr { transition: background 0.15s ease; }
 table.compare tbody tr:hover { background: rgba(255, 90, 31, 0.07); }
-table.compare td.yes { color: var(--flame); }
+table.compare td.yes { color: var(--flame-text); }
 table.compare td.no { opacity: 0.4; }
 table.compare caption {
   caption-side: bottom;
@@ -1191,7 +1206,7 @@ table.compare caption {
   border-radius: 10px;
   border: 1px dashed rgba(255, 90, 31, 0.55);
   background: rgba(255, 90, 31, 0.08);
-  color: var(--flame);
+  color: var(--flame-text);
   user-select: all;
 }
 .code-status {
@@ -1264,14 +1279,14 @@ table.compare caption {
   margin: 40px 0 14px;
   opacity: 1;
 }
-.prose a { color: var(--flame); }
+.prose a { color: var(--flame-text); }
 .prose ul { padding-left: 20px; }
 .prose li { margin-bottom: 9px; }
 
 /* ---------- CTA footer ---------- */
 .cta-footer {
   background: var(--flame);
-  color: var(--ink);
+  color: var(--on-flame);
   padding: 100px 0 60px;
   text-align: center;
   position: relative;
@@ -1370,7 +1385,7 @@ table.compare caption {
   transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
 }
 #to-top.show { opacity: 1; visibility: visible; transform: none; }
-#to-top:hover { background: var(--flame); color: var(--ink); border-color: var(--flame); }
+#to-top:hover { background: var(--flame); color: var(--on-flame); border-color: var(--flame); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 940px) {
@@ -1495,7 +1510,7 @@ h3.sub-title { font-size: clamp(19px, 2.2vw, 23px); }
   font-weight: 700;
   letter-spacing: -0.045em;
   text-transform: lowercase;
-  color: var(--flame);
+  color: var(--flame-text);
   gap: 8px;
 }
 .brand img { width: 22px; height: 22px; border-radius: 5px; }
@@ -1520,7 +1535,7 @@ a.navlink, .nav-menu > button {
   transition: background 0.18s ease, color 0.18s ease;
 }
 a.navlink:hover, .nav-menu > button:hover { background: var(--chip); opacity: 1; }
-a.navlink[aria-current="page"] { color: var(--flame); background: var(--flame-faint); }
+a.navlink[aria-current="page"] { color: var(--flame-text); background: var(--flame-faint); }
 
 /* Dropdown menus, mirroring the reference's "Websites / Templates" panels. */
 .nav-menu { position: relative; }
@@ -1579,7 +1594,7 @@ a.navlink[aria-current="page"] { color: var(--flame); background: var(--flame-fa
   border: 1px solid transparent;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
-.nav-panel a:hover { background: var(--flame); border-color: var(--flame); color: #fff; }
+.nav-panel a:hover { background: var(--flame); border-color: var(--flame); color: var(--on-flame); }
 .nav-panel a .n { font-size: 11px; opacity: 0.55; }
 .nav-panel a:hover .n { opacity: 0.9; }
 
@@ -1621,7 +1636,7 @@ kbd {
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
-.theme-toggle:hover { background: var(--flame); color: #fff; border-color: var(--flame); }
+.theme-toggle:hover { background: var(--flame); color: var(--on-flame); border-color: var(--flame); }
 .theme-toggle svg { width: 16px; height: 16px; }
 .theme-toggle .icon-sun { display: none; }
 [data-theme="light"] .theme-toggle .icon-sun { display: block; }
@@ -1693,7 +1708,7 @@ kbd {
   letter-spacing: -0.03em;
   line-height: 1.06;
 }
-.gallery-head h1 em { font-style: normal; color: var(--flame); }
+.gallery-head h1 em { font-style: normal; color: var(--flame-text); }
 .gallery-head p {
   margin: 0 auto;
   max-width: 620px;
@@ -1727,12 +1742,12 @@ kbd {
   transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
 .chip .n { font-size: 12px; opacity: 0.5; }
-.chip:hover { background: var(--flame); border-color: var(--flame); color: #fff; }
+.chip:hover { background: var(--flame); border-color: var(--flame); color: var(--on-flame); }
 .chip:hover .n { opacity: 0.95; }
 .chip[aria-pressed="true"], .chip.is-active {
   background: var(--flame);
   border-color: var(--flame);
-  color: #fff;
+  color: var(--on-flame);
 }
 .chip[aria-pressed="true"] .n { opacity: 0.95; }
 .chip-sep { width: 1px; align-self: stretch; background: var(--line-on-ink); margin: 0 4px; }
@@ -1843,8 +1858,8 @@ kbd {
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
-.pager button:hover:not(:disabled) { background: var(--flame); border-color: var(--flame); color: #fff; }
-.pager button[aria-current="true"] { background: var(--flame); border-color: var(--flame); color: #fff; }
+.pager button:hover:not(:disabled) { background: var(--flame); border-color: var(--flame); color: var(--on-flame); }
+.pager button[aria-current="true"] { background: var(--flame); border-color: var(--flame); color: var(--on-flame); }
 .pager button:disabled { opacity: 0.35; cursor: default; }
 .pager .dots { border: 0; background: none; color: var(--muted); cursor: default; }
 
@@ -1868,7 +1883,7 @@ kbd {
   font-size: 13px;
   line-height: 1.65;
 }
-.site-foot .foot-brand a.mail { color: var(--flame); text-decoration: none; }
+.site-foot .foot-brand a.mail { color: var(--flame-text); text-decoration: none; }
 .site-foot h4 {
   margin: 0 0 14px;
   font-size: 13px;
@@ -1883,10 +1898,10 @@ kbd {
   font-size: 13px;
   transition: color 0.15s ease;
 }
-.site-foot ul a:hover { color: var(--flame); }
+.site-foot ul a:hover { color: var(--flame-text); }
 .foot-social { display: flex; gap: 14px; margin-top: 4px; }
 .foot-social a { color: var(--muted); display: inline-grid; place-items: center; }
-.foot-social a:hover { color: var(--flame); }
+.foot-social a:hover { color: var(--flame-text); }
 .foot-social svg { width: 17px; height: 17px; fill: currentColor; }
 .foot-rule { height: 1px; background: var(--line-on-ink); margin: 44px 0 22px; }
 .foot-legal { text-align: center; color: var(--muted); font-size: 13px; margin: 0; }
@@ -1926,7 +1941,7 @@ kbd {
   padding: 78px 0 84px;
 }
 .section-ink { padding: 78px 0; }
-.section-paper .eyebrow { color: var(--flame); }
+.section-paper .eyebrow { color: var(--flame-text); }
 .section-paper .tag,
 .section-paper .tabs { border-color: var(--line-on-ink); }
 .section-paper table.compare th,
@@ -1968,7 +1983,7 @@ kbd {
 }
 .cta-footer .foot-nav,
 .cta-footer .foot-bottom { display: none; }
-.cta-footer .eyebrow-black { color: var(--flame); }
+.cta-footer .eyebrow-black { color: var(--flame-text); }
 .cta-footer p.tag-line { color: var(--muted); }
 .cta-footer .appstore-badge { position: relative; z-index: 1; }
 
@@ -1985,7 +2000,7 @@ kbd {
 .section-paper table.compare { color: var(--paper); }
 .section-paper .btn-dark {
   background: var(--flame);
-  color: #fff;
+  color: var(--on-flame);
 }
 .section-paper .btn-dark:hover { background: var(--flame-bright); opacity: 1; }
 .section-paper .shot { background: var(--card); }
@@ -1996,7 +2011,7 @@ kbd {
 .section-paper .price-note,
 .section-paper .stat-cell .label,
 .section-paper figcaption { color: var(--muted); }
-.section-paper a:not(.btn):not(.chip):not(.appstore-badge) { color: var(--flame); }
+.section-paper a:not(.btn):not(.chip):not(.appstore-badge) { color: var(--flame-text); }
 
 /* ---------- Mobile chrome ----------
    The open menu is a full-width sheet under the bar, not an overlay that
@@ -2249,9 +2264,9 @@ html:not(.js) #pager { display: none; }
 .deck-tab[aria-selected="true"] {
   background: var(--flame);
   border-color: var(--flame);
-  color: #fff;
+  color: var(--on-flame);
 }
-.deck-tab[aria-selected="true"] .dt-meta { color: rgba(255, 255, 255, 0.85); }
+.deck-tab[aria-selected="true"] .dt-meta { color: var(--on-flame-soft); }
 .stage3d { padding-bottom: 18px; }
 .deck { width: min(680px, 86vw); }
 .stage3d::before { width: min(680px, 86vw); }
@@ -2382,7 +2397,7 @@ html:not(.js) #pager { display: none; }
 .tab-btn.has-thumb[aria-selected="true"] {
   background: var(--flame);
   border-color: var(--flame);
-  color: #fff;
+  color: var(--on-flame);
 }
 .tab-btn.has-thumb::after { display: none; }
 .tab-label { display: block; }
