@@ -19,7 +19,6 @@ import http.server
 import json
 import os
 import re
-import socketserver
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -96,8 +95,10 @@ def main() -> None:
     ap.add_argument("--port", type=int, default=8000)
     args = ap.parse_args()
     handler = functools.partial(CleanURLHandler, directory=ROOT)
-    socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("127.0.0.1", args.port), handler) as httpd:
+    # Browsers hold several connections open per page; a single-threaded
+    # server deadlocks behind the first one and the preview hangs.
+    http.server.ThreadingHTTPServer.allow_reuse_address = True
+    with http.server.ThreadingHTTPServer(("127.0.0.1", args.port), handler) as httpd:
         print(f"Kairos preview (production-like clean URLs) http://localhost:{args.port}")
         httpd.serve_forever()
 
