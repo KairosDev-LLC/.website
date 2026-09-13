@@ -52,6 +52,10 @@ It fails the build on any of these:
 12. `site.js` referencing an element `id` that no page defines.
 13. Scroll-reveal styles that hide content without a `.js` guard — the failure
     mode where a JavaScript error leaves the page permanently blank.
+14. A dialog that claims `aria-modal="true"` without `role="dialog"`, or
+    without the Tab-containment handler in `site.js` — the failure mode where
+    a keyboard reader tabs out of the dialog into content their screen reader
+    has been told is not there.
 
 Each check was verified by deliberately breaking the site and confirming the
 checker caught it. Do not weaken a check to make a build pass; fix the site.

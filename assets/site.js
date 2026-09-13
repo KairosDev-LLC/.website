@@ -656,8 +656,47 @@
     });
   }
 
+  /* ----------------------------------------------------------------------
+     13. Modal focus containment
+         aria-modal="true" tells assistive technology the rest of the page is
+         not there. Tab must agree with that, or a keyboard reader walks out
+         of the dialog into content their screen reader is not announcing.
+     ---------------------------------------------------------------------- */
+  var FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), ' +
+    'select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  function initModalFocus() {
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      var open = $$('[role="dialog"][aria-modal="true"]').filter(function (d) {
+        return !d.hidden;
+      });
+      var dialog = open[open.length - 1];
+      if (!dialog) return;
+
+      var stops = $$(FOCUSABLE, dialog).filter(function (el) {
+        return el.offsetWidth || el.offsetHeight || el.getClientRects().length;
+      });
+      if (!stops.length) return;
+
+      var first = stops[0];
+      var last = stops[stops.length - 1];
+      var here = document.activeElement;
+      var outside = !dialog.contains(here);
+
+      if (e.shiftKey && (outside || here === first)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (outside || here === last)) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
+  }
+
   /* ---------------------------------------------------------------------- */
   function boot() {
+    initModalFocus();
     initActiveNav();
     initNav();
     initReveal();
@@ -775,6 +814,7 @@
     var opener = $('#search-open');
     if (!overlay || !input || !list) return;
     var active = 0;
+    var lastFocus = null;
 
     function render(q) {
       var terms = q.toLowerCase().trim();
@@ -794,12 +834,16 @@
     }
 
     function show() {
+      lastFocus = document.activeElement;
       overlay.hidden = false;
       render('');
       input.value = '';
       input.focus();
     }
-    function hide() { overlay.hidden = true; }
+    function hide() {
+      overlay.hidden = true;
+      if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+    }
 
     if (opener) opener.addEventListener('click', show);
     overlay.addEventListener('click', function (e) { if (e.target === overlay) hide(); });

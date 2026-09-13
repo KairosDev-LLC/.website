@@ -440,6 +440,42 @@ def main() -> int:
     else:
         ok("no inline handlers, javascript: URLs or unprotected target=_blank")
 
+    # 10d. modal dialogs keep the keyboard -----------------------------------
+    # aria-modal="true" tells assistive technology the rest of the page is not
+    # there. If Tab still walks out of the dialog, a keyboard reader lands on
+    # controls their screen reader is not announcing.
+    modal_pages = {
+        p: re.findall(r'<[^>]*aria-modal="true"[^>]*>', raw)
+        for p, raw in raw_pages.items()
+    }
+    modals = {p: tags for p, tags in modal_pages.items() if tags}
+    if modals:
+        problems = []
+        for p, tags in modals.items():
+            for tag in tags:
+                if 'role="dialog"' not in tag:
+                    mid = re.search(r'id="([^"]+)"', tag)
+                    problems.append(
+                        f"{p}: aria-modal element "
+                        f"{'#' + mid.group(1) if mid else tag[:40]} is not role=\"dialog\""
+                    )
+        src = open("assets/site.js", encoding="utf-8").read() if "assets/site.js" in on_disk else ""
+        contained = (
+            '[role="dialog"][aria-modal="true"]' in src
+            and "'Tab'" in src
+            and "preventDefault" in src
+        )
+        if not contained:
+            problems.append(
+                "assets/site.js has no Tab handler containing focus within "
+                '[role="dialog"][aria-modal="true"] dialogs'
+            )
+        if problems:
+            fail("modal dialogs do not keep the keyboard:\n      " + "\n      ".join(problems))
+        else:
+            ok(f"every aria-modal dialog is a role=dialog with Tab focus containment "
+               f"({sum(len(t) for t in modals.values())} across {len(modals)} pages)")
+
     # 11. external links ---------------------------------------------------
     if args.external:
         try:
